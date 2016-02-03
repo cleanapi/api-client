@@ -4,7 +4,7 @@
   "description": "Wrap REST client",
   "main": "src/index.coffee",
   "scripts": {
-    "postinstall": "ln -sf ./pre-commit.sh .git/hooks/pre-commit",
+    "postinstall": "ln -sf ../../pre-commit.sh .git/hooks/pre-commit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

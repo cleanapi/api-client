@@ -13,5 +13,5 @@ build = ->
 	.pipe(rename({ extname: '.min.js' }))
 	.pipe(gulp.dest(webpackConfig.output.path))
 
-gulp.task('build', build)
+gulp.task('default', build)
 gulp.task('watch', -> gulp.watch('./src/*', build))
