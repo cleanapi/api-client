@@ -1,0 +1,23 @@
+# Logs
+log
+*.log
+
+# Build output directory
+target
+
+# Dependency directory
+node_modules
+bower_components
+
+# Intellij
+.idea
+
+# vim
+*.swp
+
+.vscode
+
+.DS_Store
+.env
+
+dist

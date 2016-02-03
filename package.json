@@ -1,0 +1,28 @@
+{
+  "name": "wrap-api-client",
+  "version": "0.0.1",
+  "description": "Wrap REST client",
+  "main": "src/index.coffee",
+  "scripts": {
+    "postinstall": "ln -sf ./pre-commit.sh .git/hooks/pre-commit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WrapMedia/api-client.git"
+  },
+  "author": "Wrap Media",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WrapMedia/api-client/issues"
+  },
+  "homepage": "https://github.com/WrapMedia/api-client#readme",
+  "devDependencies": {
+    "coffee-loader": "0.7.2",
+    "coffee-script": "1.10.0",
+    "gulp": "3.9.0",
+    "gulp-rename": "1.2.2",
+    "gulp-uglify": "1.5.1",
+    "gulp-webpack": "1.5.0"
+  }
+}
