@@ -4,7 +4,7 @@
 
 ## Build
 1. `npm install`
-2. `node_modules/.bin/gulp buildApiClient`
+2. `node_modules/.bin/gulp`
 
 ## Usage
 Copy the `dist/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Promises are used to handle async operations.
