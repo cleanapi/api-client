@@ -1,49 +1,49 @@
-http = (url, headers) ->
-	core = {}
+methods = require('./constants').HTTP_METHODS
 
-	core.ajax = (method, url, args, headers) ->
-		return new Promise((resolve, reject) ->
-			client = new XMLHttpRequest()
-			uri = url
+formatQueryString = (parameters = {}) ->
+	callback = (query, key, index) ->
+		query += if index then '&' else '?'
+		query += encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key])
+		return query
+	return Object.keys(parameters).reduce(callback, '')
 
-			if (args && method == 'GET')
-				uri += '?'
-				argcount = 0
-				for key of args
-					if (argcount++)
-						uri += '&'
-					uri += encodeURIComponent(key) + '=' + encodeURIComponent(args[key])
+parseJson = (response) ->
+	return response?.json()
 
-			client.open(method, uri)
+checkStatus = (response) ->
+	if response.status >= 200 && response.status < 300
+		return response
+	else
+		error = new Error(response.statusText)
+		error.response = response
+		throw error
 
-			for name, value of headers
-				client.setRequestHeader(name, value)
+makeRequest = (method = 'GET', url, options = {}) ->
+	options.method = method
 
-			if args && (method == 'POST' || method == 'PUT')
-				client.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-				body = JSON.stringify(args)
+	if options.method == methods.POST || options.method == methods.PUT
+		options.headers = options.headers || {}
+		Object.assign(options.headers, {
+			'Accepts': 'application/json'
+			'Content-Type': 'application/json'
+		})
 
-			client.send(body)
+	if options.body
+		options.body = JSON.stringify(options.body)
 
-			client.onload = ->
-				if (this.status >= 200 && this.status < 400)
-					try
-						resolve(JSON.parse(this.response))
-					catch
-						resolve(this.response)
-				else
-					reject(this.statusText)
+	if options.search
+		url += formatQueryString(options.search)
+		delete options.search
 
-			client.onerror = ->
-				reject(this.statusText)
+	return fetch(url, options)
+		.then(checkStatus)
+		.then(parseJson)
 
-		)
-
-	return {
-		'get': (args) -> core.ajax('GET', url, args, headers)
-		'post': (args) -> core.ajax('POST', url, args, headers)
-		'put': (args) -> core.ajax('PUT', url, args, headers)
-		'delete': (args) -> core.ajax('DELETE', url, args, headers)
-	}
+http = {
+	get: (url, options) -> makeRequest(methods.GET, url, options)
+	post: (url, options) -> makeRequest(methods.POST, url, options)
+	put: (url, options) -> makeRequest(methods.PUT, url, options)
+	delete: (url, options) -> makeRequest(methods.DELETE, url, options)
+}
 
 module.exports = http

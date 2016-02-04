@@ -25,7 +25,11 @@ class Wrap
 		return cardMap
 
 	_createPersonalizedWrap: (body) ->
-		return http("#{@_client.baseUrl}/wraps/#{@id}/personalize", @_client.getAuthHeader()).post(body)
+		options = {
+			headers: @_client.getAuthHeader()
+			body
+		}
+		return http.post("#{@_client.baseUrl}/wraps/#{@id}/personalize", options)
 
 	personalize: (schemaMap) ->
 		@_client.getWrap(@id, { published: true })

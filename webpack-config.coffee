@@ -1,4 +1,6 @@
 path = require('path')
+webpack = require('webpack')
+
 module.exports = {
 	cache: true
 	entry: {
@@ -16,6 +18,11 @@ module.exports = {
 	resolve: {
 		root: __dirname
 		extensions: ['', '.js', '.coffee']
-		modulesDirectories: ['.', 'src']
+		modulesDirectories: ['.', 'src', 'node_modules']
 	}
+	plugins: [
+		new webpack.ProvidePlugin({
+			'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+		})
+	]
 }
