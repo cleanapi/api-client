@@ -177,12 +177,10 @@
 	  if (parameters == null) {
 	    parameters = {};
 	  }
-	  callback = function(query, key, index) {
-	    query += index ? '&' : '?';
-	    query += encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key]);
-	    return query;
+	  callback = function(key) {
+	    return (encodeURIComponent(key)) + "=" + (encodeURIComponent(parameters[key]));
 	  };
-	  return Object.keys(parameters).reduce(callback, '');
+	  return "?" + (Object.keys(parameters).map(callback).join('&'));
 	};
 
 	parseJson = function(response) {

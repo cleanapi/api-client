@@ -1,11 +1,9 @@
 methods = require('./constants').HTTP_METHODS
 
 formatQueryString = (parameters = {}) ->
-	callback = (query, key, index) ->
-		query += if index then '&' else '?'
-		query += encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key])
-		return query
-	return Object.keys(parameters).reduce(callback, '')
+	callback = (key) ->
+		return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
+	return "?#{Object.keys(parameters).map(callback).join('&')}"
 
 parseJson = (response) ->
 	return response?.json()
