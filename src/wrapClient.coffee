@@ -1,5 +1,5 @@
 constants = require('./constants')
-http = require('http')
+http = require('./http')
 Wrap = require('./wrap')
 
 class WrapClient
@@ -9,16 +9,24 @@ class WrapClient
 
 	authorize: (credentials = {}) ->
 		credentials.client_id = constants.CLIENT_ID
-		return http("#{@baseUrl}/auth/sign_in").post(credentials)
+		return http.post("#{@baseUrl}/auth/sign_in", { body: credentials })
 			.then((response) =>
 				@_authorization = response.authorization
 				return
 			)
 
-	listWraps: (query) ->
-		return http("#{@baseUrl}/wraps", @getAuthHeader()).get(query)
+	listWraps: (search) ->
+		options = {
+			headers: @getAuthHeader()
+			search
+		}
+		return http.get("#{@baseUrl}/wraps", options)
 
-	getWrap: (wrapId, query) ->
-		return http("#{@baseUrl}/wraps/#{wrapId}", @getAuthHeader()).get(query).then((wrap) => new Wrap(wrap, @))
+	getWrap: (wrapId, search) ->
+		options = {
+			headers: @getAuthHeader()
+			search
+		}
+		return http.get("#{@baseUrl}/wraps/#{wrapId}", options).then((wrap) => new Wrap(wrap, @))
 
 module.exports = WrapClient

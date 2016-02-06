@@ -17,12 +17,17 @@
     "url": "https://github.com/WrapMedia/api-client/issues"
   },
   "homepage": "https://github.com/WrapMedia/api-client#readme",
+  "dependencies": {
+    "whatwg-fetch": "0.11.0"
+  },
   "devDependencies": {
     "coffee-loader": "0.7.2",
     "coffee-script": "1.10.0",
+    "exports-loader": "0.6.2",
     "gulp": "3.9.0",
     "gulp-rename": "1.2.2",
     "gulp-uglify": "1.5.1",
-    "gulp-webpack": "1.5.0"
+    "gulp-webpack": "1.5.0",
+    "imports-loader": "0.6.5"
   }
 }
