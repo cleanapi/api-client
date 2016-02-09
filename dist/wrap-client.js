@@ -116,21 +116,17 @@
 	  };
 
 	  WrapClient.prototype.listWraps = function(search) {
-	    var options;
-	    options = {
+	    return http.get(this.baseUrl + "/wraps", {
 	      headers: this.getAuthHeader(),
 	      search: search
-	    };
-	    return http.get(this.baseUrl + "/wraps", options);
+	    });
 	  };
 
 	  WrapClient.prototype.getWrap = function(wrapId, search) {
-	    var options;
-	    options = {
+	    return http.get(this.baseUrl + "/wraps/" + wrapId, {
 	      headers: this.getAuthHeader(),
 	      search: search
-	    };
-	    return http.get(this.baseUrl + "/wraps/" + wrapId, options).then((function(_this) {
+	    }).then((function(_this) {
 	      return function(wrap) {
 	        return new Wrap(wrap, _this);
 	      };
@@ -708,21 +704,17 @@
 	  };
 
 	  Wrap.prototype._createPersonalizedWrap = function(body) {
-	    var options;
-	    options = {
+	    return http.post(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      body: body
-	    };
-	    return http.post(this._wrapUrl + "/personalize", options);
+	    });
 	  };
 
 	  Wrap.prototype.listPersonalized = function(search) {
-	    var options;
-	    options = {
+	    return http.get(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      search: search
-	    };
-	    return http.get(this._wrapUrl + "/personalize", options);
+	    });
 	  };
 
 	  Wrap.prototype.createPersonalized = function(schemaMap, tags) {
@@ -744,11 +736,9 @@
 	  };
 
 	  Wrap.prototype.deletePersonalized = function(id) {
-	    var options;
-	    options = {
+	    return http["delete"](this._wrapUrl + "/personalize/" + id, {
 	      headers: this._client.getAuthHeader()
-	    };
-	    return http["delete"](this._wrapUrl + "/personalize/" + id, options);
+	    });
 	  };
 
 	  return Wrap;

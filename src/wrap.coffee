@@ -26,18 +26,16 @@ class Wrap
 		return cardMap
 
 	_createPersonalizedWrap: (body) ->
-		options = {
+		return http.post("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			body
-		}
-		return http.post("#{@_wrapUrl}/personalize", options)
+		})
 
 	listPersonalized: (search) ->
-		options = {
+		return http.get("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			search
-		}
-		return http.get("#{@_wrapUrl}/personalize", options)
+		})
 
 	createPersonalized: (schemaMap, tags) ->
 		@_client.getWrap(@id, { published: true })
@@ -53,9 +51,6 @@ class Wrap
 			)
 
 	deletePersonalized: (id) ->
-		options = {
-			headers: @_client.getAuthHeader()
-		}
-		return http.delete("#{@_wrapUrl}/personalize/#{id}", options)
+		return http.delete("#{@_wrapUrl}/personalize/#{id}", { headers: @_client.getAuthHeader() })
 
 module.exports = Wrap

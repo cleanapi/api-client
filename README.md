@@ -3,11 +3,12 @@
 > This library is in development, should be considered experimental, and should not be distributed externally.
 
 ## Build
+Library builds are included in the repo in the `dist` directory. If you do want build the library yourself, simply follow these steps:
 1. `npm install`
 2. `node_modules/.bin/gulp`
 
 ## Usage
-Copy the `dist/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Promises are used to handle async operations.
+Copy the `dist/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Native promises are used to handle async operations. A polyfill should be used to support older browsers.
 
 ### Creating a client
 The `Wrap` global is a factory with one method: `#createClient`. Each client can point to a different API host and authorize to different accounts.
@@ -42,10 +43,10 @@ client.authorize(credentials)
 ```
 
 #### #listWraps([search])
-Returns a list of all Wraps for an account. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the wrapi-rails apidocs.
+Returns a list of all Wraps for an account. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
 
 #### #getWrap(wrapId, [search])
-Returns a Wrap resource instance for `wrapId`. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the wrapi-rails apidocs.
+Returns a Wrap resource instance for `wrapId`. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
 
 ### Wrap instance methods
 

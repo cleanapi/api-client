@@ -16,17 +16,15 @@ class WrapClient
 			)
 
 	listWraps: (search) ->
-		options = {
+		return http.get("#{@baseUrl}/wraps", {
 			headers: @getAuthHeader()
 			search
-		}
-		return http.get("#{@baseUrl}/wraps", options)
+		})
 
 	getWrap: (wrapId, search) ->
-		options = {
+		return http.get("#{@baseUrl}/wraps/#{wrapId}", {
 			headers: @getAuthHeader()
 			search
-		}
-		return http.get("#{@baseUrl}/wraps/#{wrapId}", options).then((wrap) => new Wrap(wrap, @))
+		}).then((wrap) => new Wrap(wrap, @))
 
 module.exports = WrapClient
