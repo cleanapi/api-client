@@ -4,6 +4,7 @@
 
 ## Build
 Library builds are included in the repo in the `dist` directory. If you do want build the library yourself, simply follow these steps:
+
 1. `npm install`
 2. `node_modules/.bin/gulp`
 
