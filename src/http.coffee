@@ -5,8 +5,12 @@ formatQueryString = (parameters = {}) ->
 		return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
 	return "?#{Object.keys(parameters).map(callback).join('&')}"
 
+isNullBodyStatus = (status) ->
+	return status == 101 || status == 204 || status == 205 || status == 304
+
 parseJson = (response) ->
-	return response?.json()
+	if !isNullBodyStatus(response.status)
+		return response.json()
 
 checkStatus = (response) ->
 	if response.status >= 200 && response.status < 300
