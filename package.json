@@ -17,17 +17,25 @@
     "url": "https://github.com/WrapMedia/api-client/issues"
   },
   "homepage": "https://github.com/WrapMedia/api-client#readme",
-  "dependencies": {
-    "whatwg-fetch": "0.11.0"
-  },
   "devDependencies": {
     "coffee-loader": "0.7.2",
     "coffee-script": "1.10.0",
+    "coffeelint-conditional-modifiers": "0.0.2",
+    "coffeelint-forbidden-keywords": "0.1.1",
+    "coffeelint-function-call-whitespace": "0.1.3",
+    "coffeelint-loader": "0.1.1",
+    "coffeelint-no-code-after-return": "0.0.3",
+    "coffeelint-no-trailing-commas": "1.0.2",
     "exports-loader": "0.6.2",
     "gulp": "3.9.0",
+    "gulp-coffeelint": "0.6.0",
+    "gulp-coffeelint-threshold": "1.0.0",
+    "gulp-contains": "1.0.0",
     "gulp-rename": "1.2.2",
     "gulp-uglify": "1.5.1",
+    "gulp-util": "3.0.7",
     "gulp-webpack": "1.5.0",
-    "imports-loader": "0.6.5"
+    "imports-loader": "0.6.5",
+    "whatwg-fetch": "0.11.0"
   }
 }

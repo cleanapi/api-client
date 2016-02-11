@@ -11,9 +11,19 @@ module.exports = {
 		filename: 'wrap-client.js'
 	}
 	module: {
+		preLoaders: [
+			{
+				test: /\.coffee$/
+				exclude: /node_modules/
+				loader: 'coffeelint-loader'
+			}
+		]
 		loaders: [
 			{ test: /\.coffee$/, loaders: ['coffee-loader'] }
 		]
+	}
+	coffeelint: {
+		configFile: './coffeelint.json'
 	}
 	resolve: {
 		root: __dirname
