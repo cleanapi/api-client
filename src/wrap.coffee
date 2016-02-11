@@ -15,7 +15,7 @@ class Wrap
 			{ id, schema }
 
 	_assignTargetIds: (sourceCards, targetCards) ->
-		cardMap = @_createCardMap(sourceCards, targetCards)
+		cardMap = @_createCardMap(@cards, targetCards)
 		for card in sourceCards
 			card.id = cardMap[card.id]
 		return sourceCards

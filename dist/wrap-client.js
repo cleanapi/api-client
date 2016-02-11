@@ -686,7 +686,7 @@
 
 	  Wrap.prototype._assignTargetIds = function(sourceCards, targetCards) {
 	    var card, cardMap, i, len;
-	    cardMap = this._createCardMap(sourceCards, targetCards);
+	    cardMap = this._createCardMap(this.cards, targetCards);
 	    for (i = 0, len = sourceCards.length; i < len; i++) {
 	      card = sourceCards[i];
 	      card.id = cardMap[card.id];
