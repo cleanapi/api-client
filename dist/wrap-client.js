@@ -208,15 +208,15 @@
 	    options = {};
 	  }
 	  options.method = method;
-	  if (options.method === methods.POST || options.method === methods.PUT) {
+	  if (options.method !== methods.GET) {
 	    options.headers = options.headers || {};
 	    Object.assign(options.headers, {
 	      'Accepts': 'application/json',
 	      'Content-Type': 'application/json'
 	    });
-	  }
-	  if (options.body) {
-	    options.body = JSON.stringify(options.body);
+	    if (options.body) {
+	      options.body = JSON.stringify(options.body);
+	    }
 	  }
 	  if (options.search) {
 	    url += formatQueryString(options.search);
@@ -651,7 +651,9 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Wrap, http;
+	var Wrap, http, isObject;
+
+	isObject = __webpack_require__(7);
 
 	http = __webpack_require__(4);
 
@@ -723,21 +725,25 @@
 	    }).then((function(_this) {
 	      return function(publishedWrap) {
 	        var body, cards;
-	        cards = _this._convertSchemaMapToCards(schemaMap);
-	        cards = _this._assignTargetIds(cards, publishedWrap.cards);
-	        schemaMap = _this._convertCardsToSchemaMap(cards);
 	        body = {
-	          personalized_json: schemaMap,
 	          tags: tags
 	        };
+	        if (isObject(schemaMap)) {
+	          cards = _this._convertSchemaMapToCards(schemaMap);
+	          cards = _this._assignTargetIds(cards, publishedWrap.cards);
+	          body.personalized_json = _this._convertCardsToSchemaMap(cards);
+	        } else {
+	          body.url = schemaMap;
+	        }
 	        return _this._createPersonalizedWrap(body);
 	      };
 	    })(this));
 	  };
 
-	  Wrap.prototype.deletePersonalized = function(id) {
-	    return http["delete"](this._wrapUrl + "/personalize/" + id, {
-	      headers: this._client.getAuthHeader()
+	  Wrap.prototype.deletePersonalized = function(body) {
+	    return http["delete"](this._wrapUrl + "/personalize", {
+	      headers: this._client.getAuthHeader(),
+	      body: body
 	    });
 	  };
 
@@ -746,6 +752,41 @@
 	})();
 
 	module.exports = Wrap;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+
+	module.exports = isObject;
 
 
 /***/ }

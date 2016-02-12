@@ -66,7 +66,7 @@ client.getWrap(wrapId)
 ```
 
 #### #createPersonalized(schemaMap, [tags])
-Creates a new personalized Wrap from the Wrap instance. The supplied `schemaMap` will be used to substitute new data for each card's schemaJson. `schemaMap` should be a hash where each key is a card id and each value the substituted data. If provided, `tags` should be a string consisting of a comma separated list of tags to be applied to the newly created wrap.
+Creates a new personalized Wrap from the Wrap instance. The supplied `schemaMap` will be used to substitute new data for each card's schemaJson. `schemaMap` should be a hash where each key is a card id and each value the substituted data. Alternately, `schemaMap` can be an absolute url that resolves to the hash. If provided, `tags` should be a string consisting of a comma separated list of tags to be applied to the newly created wrap.
 
 ```javascript
 var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
@@ -83,8 +83,8 @@ client.getWrap(wrapId)
 	});
 ```
 
-#### #deletePersonalized(id)
-Deletes the personalized Wrap with `id`.
+#### #deletePersonalized(filter)
+Deletes personalized Wraps based on the filter. Filter parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/personalization/Api_Personalization_destroy_delete_2).
 
 ```javascript
 var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
@@ -93,10 +93,11 @@ client.getWrap(wrapId)
 		return wrap.listPersonalized();
 	})
 	.then(function(personalizedWraps) {
-		return wrap.deletePersonalized(personalizedWraps[0].id);
+		ids = personalizedWraps.map(function(personalizedWrap) { return personalizedWrap.id; });
+		return wrap.deletePersonalized({ wrap_ids: ids });
 	})
 	.then(function() {
-		// The first personalized wrap was successfully deleted.
+		// All of the personalizedWraps were deleted.
 	});
 ```
 

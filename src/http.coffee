@@ -23,15 +23,15 @@ checkStatus = (response) ->
 makeRequest = (method = 'GET', url, options = {}) ->
 	options.method = method
 
-	if options.method == methods.POST || options.method == methods.PUT
+	if options.method != methods.GET
 		options.headers = options.headers || {}
 		Object.assign(options.headers, {
 			'Accepts': 'application/json'
 			'Content-Type': 'application/json'
 		})
 
-	if options.body
-		options.body = JSON.stringify(options.body)
+		if options.body
+			options.body = JSON.stringify(options.body)
 
 	if options.search
 		url += formatQueryString(options.search)

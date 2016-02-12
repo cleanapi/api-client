@@ -1,3 +1,4 @@
+isObject = require('lodash/isObject')
 http = require('./http')
 
 class Wrap
@@ -40,17 +41,20 @@ class Wrap
 	createPersonalized: (schemaMap, tags) ->
 		@_client.getWrap(@id, { published: true })
 			.then((publishedWrap) =>
-				cards = @_convertSchemaMapToCards(schemaMap)
-				cards = @_assignTargetIds(cards, publishedWrap.cards)
-				schemaMap = @_convertCardsToSchemaMap(cards)
-				body = {
-					personalized_json: schemaMap
-					tags
-				}
+				body = { tags }
+				if isObject(schemaMap)
+					cards = @_convertSchemaMapToCards(schemaMap)
+					cards = @_assignTargetIds(cards, publishedWrap.cards)
+					body.personalized_json = @_convertCardsToSchemaMap(cards)
+				else
+					body.url = schemaMap
 				return @_createPersonalizedWrap(body)
 			)
 
-	deletePersonalized: (id) ->
-		return http.delete("#{@_wrapUrl}/personalize/#{id}", { headers: @_client.getAuthHeader() })
+	deletePersonalized: (body) ->
+		return http.delete("#{@_wrapUrl}/personalize", {
+			headers: @_client.getAuthHeader()
+			body
+		})
 
 module.exports = Wrap
