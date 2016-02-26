@@ -44,7 +44,7 @@ client.authorize(credentials)
 ```
 
 #### #listWraps([search])
-Returns a list of all Wraps for an account. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
+Returns a list of Wrap resources for an account. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
 
 #### #getWrap(wrapId, [search])
 Returns a Wrap resource instance for `wrapId`. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
@@ -52,7 +52,7 @@ Returns a Wrap resource instance for `wrapId`. An optional `search` argument can
 ### Wrap instance methods
 
 #### #listPersonalized([search])
-Returns a list of all personalized Wraps for a Wrap. An optional `search` argument can include filter parameters.
+Returns a list of all personalized Wrap resources for a Wrap. An optional `search` argument can include filter parameters.
 
 ```javascript
 var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
@@ -98,6 +98,19 @@ client.getWrap(wrapId)
 	})
 	.then(function() {
 		// All of the personalizedWraps were deleted.
+	});
+```
+
+#### #share(mobileNumber, [body])
+Sends an SMS message containing the wrap's canonicalUrl to `mobileNumber`. (Only US phone numbers are currently supported. The country code will be prepended for you.) If supplied, the optional `body` param should be a string containing a `{{wrap}}` token that will be replaced with the canonicalUrl.
+
+```javascript
+client.listWraps()
+	.then(function(wraps) {
+		// Using the default body.
+		wraps[0].share('2125551212');
+		// Using a custom body.
+		wraps[1].share('4155551212', 'Thanks for your business! {{wrap}}');
 	});
 ```
 
