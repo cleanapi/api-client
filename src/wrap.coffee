@@ -1,3 +1,4 @@
+constants = require('./constants')
 isObject = require('lodash/isObject')
 http = require('./http')
 
@@ -36,7 +37,9 @@ class Wrap
 		return http.get("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			search
-		})
+		}).then((wraps) =>
+			return wraps.map((wrap) => new Wrap(wrap, @_client))
+		)
 
 	createPersonalized: (schemaMap, tags) ->
 		@_client.getWrap(@id, { published: true })
@@ -55,6 +58,16 @@ class Wrap
 		return http.delete("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			body
+		})
+
+	share: (mobileNumber, body) ->
+		return http.get("#{@_wrapUrl}/share", {
+			headers: @_client.getAuthHeader()
+			search: {
+				type: constants.MESSAGE_SERVICES.SMS
+				phone_number: mobileNumber
+				body
+			}
 		})
 
 module.exports = Wrap

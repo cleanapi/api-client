@@ -19,7 +19,9 @@ class WrapClient
 		return http.get("#{@baseUrl}/wraps", {
 			headers: @getAuthHeader()
 			search
-		})
+		}).then((wraps) =>
+			return wraps.map((wrap) => new Wrap(wrap, @))
+		)
 
 	getWrap: (wrapId, search) ->
 		return http.get("#{@baseUrl}/wraps/#{wrapId}", {

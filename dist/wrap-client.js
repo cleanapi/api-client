@@ -119,7 +119,13 @@
 	    return http.get(this.baseUrl + "/wraps", {
 	      headers: this.getAuthHeader(),
 	      search: search
-	    });
+	    }).then((function(_this) {
+	      return function(wraps) {
+	        return wraps.map(function(wrap) {
+	          return new Wrap(wrap, _this);
+	        });
+	      };
+	    })(this));
 	  };
 
 	  WrapClient.prototype.getWrap = function(wrapId, search) {
@@ -154,6 +160,10 @@
 	    POST: 'post',
 	    PUT: 'put',
 	    DELETE: 'delete'
+	  },
+	  MESSAGE_SERVICES: {
+	    SMS: 'sms',
+	    MMS: 'mms'
 	  }
 	};
 
@@ -174,7 +184,9 @@
 	    parameters = {};
 	  }
 	  callback = function(key) {
-	    return (encodeURIComponent(key)) + "=" + (encodeURIComponent(parameters[key]));
+	    if (parameters[key] !== void 0) {
+	      return (encodeURIComponent(key)) + "=" + (encodeURIComponent(parameters[key]));
+	    }
 	  };
 	  return "?" + (Object.keys(parameters).map(callback).join('&'));
 	};
@@ -651,7 +663,9 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Wrap, http, isObject;
+	var Wrap, constants, http, isObject;
+
+	constants = __webpack_require__(3);
 
 	isObject = __webpack_require__(7);
 
@@ -716,7 +730,13 @@
 	    return http.get(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      search: search
-	    });
+	    }).then((function(_this) {
+	      return function(wraps) {
+	        return wraps.map(function(wrap) {
+	          return new Wrap(wrap, _this._client);
+	        });
+	      };
+	    })(this));
 	  };
 
 	  Wrap.prototype.createPersonalized = function(schemaMap, tags) {
@@ -744,6 +764,17 @@
 	    return http["delete"](this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      body: body
+	    });
+	  };
+
+	  Wrap.prototype.share = function(mobileNumber, body) {
+	    return http.get(this._wrapUrl + "/share", {
+	      headers: this._client.getAuthHeader(),
+	      search: {
+	        type: constants.MESSAGE_SERVICES.SMS,
+	        phone_number: mobileNumber,
+	        body: body
+	      }
 	    });
 	  };
 

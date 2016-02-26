@@ -2,7 +2,8 @@ methods = require('./constants').HTTP_METHODS
 
 formatQueryString = (parameters = {}) ->
 	callback = (key) ->
-		return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
+		if parameters[key] != undefined
+			return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
 	return "?#{Object.keys(parameters).map(callback).join('&')}"
 
 isNullBodyStatus = (status) ->

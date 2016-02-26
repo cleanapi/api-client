@@ -7,6 +7,10 @@ constants = {
 		PUT: 'put'
 		DELETE: 'delete'
 	}
+	MESSAGE_SERVICES: {
+		SMS: 'sms'
+		MMS: 'mms'
+	}
 }
 
 module.exports = constants
