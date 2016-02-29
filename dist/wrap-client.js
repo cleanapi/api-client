@@ -723,7 +723,11 @@
 	    return http.post(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      body: body
-	    });
+	    }).then((function(_this) {
+	      return function(wrap) {
+	        return new Wrap(wrap, _this._client);
+	      };
+	    })(this));
 	  };
 
 	  Wrap.prototype.listPersonalized = function(search) {

@@ -31,7 +31,7 @@ class Wrap
 		return http.post("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			body
-		})
+		}).then((wrap) => new Wrap(wrap, @_client))
 
 	listPersonalized: (search) ->
 		return http.get("#{@_wrapUrl}/personalize", {
