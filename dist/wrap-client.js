@@ -153,7 +153,7 @@
 	var constants;
 
 	constants = {
-	  CLIENT_ID: 'authoring',
+	  CLIENT_ID: 'api',
 	  PRODUCTION_API_URL: 'https://wrapi.wrap.co/api',
 	  HTTP_METHODS: {
 	    GET: 'get',
