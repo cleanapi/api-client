@@ -3,14 +3,33 @@
 > This library is in development, should be considered experimental, and should not be distributed externally.
 
 ## Build
-Library builds are included in the repo in the `dist` directory. If you do want build the library yourself, simply follow these steps:
+Library builds are included in the repo in the `dist/node` and `dist/browser` directories. If you do want build the library yourself, simply follow these steps:
 
 1. `npm install`
 2. `node_modules/.bin/gulp`
 
-## Usage
-Copy the `dist/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Native promises are used to handle async operations. A polyfill should be used to support older browsers.
+## Development
+If you are planning on contributing changes to the library, keep in mind that we keep a current build of the library under version control. There is a pre-commit script included that will perform this build for you. Run the following shell command from the root of the cloned library directory so that commits will trigger it.
+```
+ln -sf ../../pre-commit.sh .git/hooks/pre-commit
+```
 
+## Installation
+### NodeJS
+As this is not currently published on NPM, you'll need to reference it from our Github repo in your project dependencies. It can then be required like any other NPM package.
+```
+"dependencies": {
+	"wrap-api-client": "wrapmedia/api-client"
+}
+```
+
+### Browser
+Copy the `dist/browser/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Native promises are used to handle async operations. A polyfill should be used to support older browsers.
+
+#### Browser compatibility
+Browser support will match our support for Wrap Authoring. That appears to be the most recent releases of FF, Chrome, and Safari as well as Edge.
+
+## Usage
 ### Creating a client
 The `Wrap` global is a factory with one method: `#createClient`. Each client can point to a different API host and authorize to different accounts.
 
@@ -113,6 +132,3 @@ client.listWraps()
 		wraps[1].share('4155551212', 'Thanks for your business! {{wrap}}');
 	});
 ```
-
-## Browser compatibility
-Browser support will match our support for Wrap Authoring. That appears to be the most recent releases of FF, Chrome, and Safari as well as Edge.

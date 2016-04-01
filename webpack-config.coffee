@@ -7,7 +7,7 @@ module.exports = {
 		app: path.join(__dirname, 'src', 'index.coffee')
 	}
 	output: {
-		path: path.join(__dirname, 'dist')
+		path: path.join(__dirname, 'dist', 'browser')
 		filename: 'wrap-client.js'
 	}
 	module: {
@@ -30,9 +30,4 @@ module.exports = {
 		extensions: ['', '.js', '.coffee']
 		modulesDirectories: ['.', 'src', 'node_modules']
 	}
-	plugins: [
-		new webpack.ProvidePlugin({
-			'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-		})
-	]
 }

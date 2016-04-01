@@ -1,9 +1,11 @@
 require('coffee-loader')
+coffee = require('gulp-coffee')
 coffeelint = require('gulp-coffeelint')
 coffeelintThreshold = require('gulp-coffeelint-threshold')
 contains = require('gulp-contains')
 gulp = require('gulp')
 gulpUtil = require('gulp-util')
+path = require('path')
 rename = require('gulp-rename')
 uglify = require('gulp-uglify')
 webpack = require('gulp-webpack')
@@ -29,13 +31,18 @@ handleFoundString = (string, file, cb) ->
 		gulpUtil.log(gulpUtil.colors.red("#{string} found on #{file.relative}. Please remove before commiting..."))
 		return true
 
-build = ->
+buildBrowser = ->
 	gulp.src(webpackConfig.entry.app)
-	.pipe(webpack(webpackConfig))
-	.pipe(gulp.dest(webpackConfig.output.path))
-	.pipe(uglify())
-	.pipe(rename({ extname: '.min.js' }))
-	.pipe(gulp.dest(webpackConfig.output.path))
+		.pipe(webpack(webpackConfig))
+		.pipe(gulp.dest(webpackConfig.output.path))
+		.pipe(uglify())
+		.pipe(rename({ extname: '.min.js' }))
+		.pipe(gulp.dest(webpackConfig.output.path))
+
+buildNode = ->
+	gulp.src(path.join(__dirname, 'src', '**/*.coffee'))
+		.pipe(coffee({ bare: true }).on('error', gulpUtil.log))
+		.pipe(gulp.dest(path.join(__dirname, 'dist', 'node')))
 
 lint = ->
 	gulp.src(['./**/*.coffee', 'gulpfile.coffee', '!./dist/**/*', '!./node_modules/**/*'])
@@ -47,6 +54,9 @@ lint = ->
 		.pipe(coffeelint.reporter())
 		.pipe(coffeelintThreshold(0, 0, printWarningsAndErrors))
 
-gulp.task('default', build)
+gulp.task('default', ['build'])
+gulp.task('build', ['build:browser', 'build:node'])
+gulp.task('build:browser', buildBrowser)
+gulp.task('build:node', ['lint'], buildNode)
 gulp.task('watch', -> gulp.watch('./src/*', build))
 gulp.task('lint', lint)

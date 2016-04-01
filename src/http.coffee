@@ -1,10 +1,14 @@
+assign = require('lodash/assign')
+fetch = require('isomorphic-fetch')
+keys = require('lodash/keys')
 methods = require('./constants').HTTP_METHODS
+
 
 formatQueryString = (parameters = {}) ->
 	callback = (key) ->
 		if parameters[key] != undefined
 			return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
-	return "?#{Object.keys(parameters).map(callback).join('&')}"
+	return "?#{keys(parameters).map(callback).join('&')}"
 
 isNullBodyStatus = (status) ->
 	return status == 101 || status == 204 || status == 205 || status == 304
@@ -26,7 +30,7 @@ makeRequest = (method = 'GET', url, options = {}) ->
 
 	if options.method != methods.GET
 		options.headers = options.headers || {}
-		Object.assign(options.headers, {
+		assign(options.headers, {
 			'Accepts': 'application/json'
 			'Content-Type': 'application/json'
 		})

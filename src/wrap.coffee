@@ -1,10 +1,11 @@
+assign = require('lodash/assign')
 constants = require('./constants')
 isObject = require('lodash/isObject')
 http = require('./http')
 
 class Wrap
 	constructor: (resource, @_client) ->
-		Object.assign(@, resource)
+		assign(@, resource)
 		@_wrapUrl = "#{@_client.baseUrl}/wraps/#{@id}"
 
 	_createCardMap: (sourceCards, targetCards) ->

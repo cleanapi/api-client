@@ -1,2 +1,5 @@
 WrapClientFactory = require('./wrapClientFactory')
-window.Wrap = new WrapClientFactory()
+if window?
+	window.Wrap = new WrapClientFactory()
+else if process?
+	module.exports = new WrapClientFactory()
