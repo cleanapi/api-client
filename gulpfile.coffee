@@ -5,6 +5,8 @@ coffeelintThreshold = require('gulp-coffeelint-threshold')
 contains = require('gulp-contains')
 gulp = require('gulp')
 gulpUtil = require('gulp-util')
+jasmine = require('gulp-jasmine')
+karma = require('karma')
 path = require('path')
 rename = require('gulp-rename')
 uglify = require('gulp-uglify')
@@ -54,9 +56,22 @@ lint = ->
 		.pipe(coffeelint.reporter())
 		.pipe(coffeelintThreshold(0, 0, printWarningsAndErrors))
 
+testNode = ->
+	gulp.src(['./spec/**/*.spec.coffee'])
+		.pipe(jasmine())
+
+testBrowser = (done) ->
+	new karma.Server({
+		configFile: __dirname + '/karma.conf.js'
+		singleRun: true
+	}, done).start()
+
 gulp.task('default', ['build'])
 gulp.task('build', ['build:browser', 'build:node'])
 gulp.task('build:browser', buildBrowser)
 gulp.task('build:node', ['lint'], buildNode)
 gulp.task('watch', -> gulp.watch('./src/*', build))
 gulp.task('lint', lint)
+gulp.task('test:browser', testBrowser)
+gulp.task('test:node', testNode)
+gulp.task('test', ['test:browser', 'test:node'])
