@@ -14,6 +14,8 @@ If you are planning on contributing changes to the library, keep in mind that we
 ln -sf ../../pre-commit.sh .git/hooks/pre-commit
 ```
 
+Also note that our test setup requires a version of Node greater than 0.12.
+
 ## Installation
 ### NodeJS
 As this is not currently published on NPM, you'll need to reference it from our Github repo in your project dependencies. It can then be required like any other NPM package.

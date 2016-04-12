@@ -1,6 +1,5 @@
 require('isomorphic-fetch')
-fetchMock = require('fetch-mock/es5/server')
-#fetchMock = require('fetch-mock')
+fetchMock = require('fetch-mock')
 http = require('../src/http')
 
 describe('http', ->
