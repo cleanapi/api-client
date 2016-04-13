@@ -1,8 +1,8 @@
-var assign, checkStatus, fetch, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
+var assign, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
 
 assign = require('lodash/assign');
 
-fetch = require('isomorphic-fetch');
+require('isomorphic-fetch');
 
 keys = require('lodash/keys');
 

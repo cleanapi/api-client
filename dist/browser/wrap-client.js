@@ -276,11 +276,11 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assign, checkStatus, fetch, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
+	var assign, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
 
 	assign = __webpack_require__(6);
 
-	fetch = __webpack_require__(35);
+	__webpack_require__(35);
 
 	keys = __webpack_require__(24);
 

@@ -1,5 +1,5 @@
 assign = require('lodash/assign')
-fetch = require('isomorphic-fetch')
+require('isomorphic-fetch')
 keys = require('lodash/keys')
 methods = require('./constants').HTTP_METHODS
 
