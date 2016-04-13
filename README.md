@@ -18,11 +18,16 @@ Also note that our test setup requires a version of Node greater than 0.12.
 
 ## Installation
 ### NodeJS
-As this is not currently published on NPM, you'll need to reference it from our Github repo in your project dependencies. It can then be required like any other NPM package.
+As this is not currently published on NPM, you'll need to reference it from our Github repo in the dependencies of your `package.json`.
 ```
 "dependencies": {
 	"wrap-api-client": "wrapmedia/api-client"
 }
+```
+It can then be required like any other NPM package. If you are using a version of Node that doesn't have native Promise support, include the `es6-promise` module in your dependencies and polyfill it before `wrap-api-client` is required.
+```
+require('es6-promise').polyfill();
+require('wrap-api-client')
 ```
 
 ### Browser
