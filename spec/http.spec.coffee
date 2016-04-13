@@ -5,12 +5,11 @@ http = require('../src/http')
 BASE_PATH = 'https://api.wrap.co/api'
 
 describe('http', ->
+	afterEach(->
+		fetchMock.restore()
+	)
 
 	describe('GET requests', ->
-		afterEach(->
-			fetchMock.restore()
-		)
-
 		it('should include a query string when a search hash is provided', (done) ->
 			fetchMock.mock(BASE_PATH + '/wraps?page=1&page_size=20', 'GET', [])
 
@@ -28,10 +27,6 @@ describe('http', ->
 				status: 404
 				body: {}
 			})
-		)
-
-		afterEach(->
-			fetchMock.restore()
 		)
 
 		it('should not resolve', (done) ->

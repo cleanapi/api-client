@@ -12,7 +12,7 @@ var webpackConfig = {
     cache: true,
     plugins: [
         new webpack.ProvidePlugin({
-            'Promise': 'exports?global.Promise!es6-promise'
+            Promise: 'exports?global.Promise!es6-promise'
         })
     ]
 };
