@@ -1,6 +1,4 @@
-var assign, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
-
-assign = require('lodash/assign');
+var checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
 
 require('isomorphic-fetch');
 
@@ -50,12 +48,10 @@ makeRequest = function(method, url, options) {
     options = {};
   }
   options.method = method;
+  options.headers = options.headers || {};
+  options.headers['Accepts'] = 'application/json';
   if (options.method !== methods.GET) {
-    options.headers = options.headers || {};
-    assign(options.headers, {
-      'Accepts': 'application/json',
-      'Content-Type': 'application/json'
-    });
+    options.headers['Content-Type'] = 'application/json';
     if (options.body) {
       options.body = JSON.stringify(options.body);
     }
