@@ -1,9 +1,9 @@
-var WrapClientFactory;
+var WrapClient;
 
-WrapClientFactory = require('./wrapClientFactory');
+WrapClient = require('./wrapClient');
 
 if (typeof window !== "undefined" && window !== null) {
-  window.Wrap = new WrapClientFactory();
+  window.Wrap = WrapClient;
 } else if (typeof process !== "undefined" && process !== null) {
-  module.exports = new WrapClientFactory();
+  module.exports = WrapClient;
 }

@@ -7,28 +7,15 @@ http = require('./http');
 Wrap = require('./wrap');
 
 WrapClient = (function() {
-  function WrapClient(baseUrl) {
-    this.baseUrl = baseUrl;
+  function WrapClient(apiKey, baseUrl) {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl != null ? baseUrl : constants.PRODUCTION_API_URL;
   }
 
   WrapClient.prototype.getAuthHeader = function() {
     return {
-      'Authorization': this._authorization
+      'Authorization': "Bearer " + this.apiKey
     };
-  };
-
-  WrapClient.prototype.authorize = function(credentials) {
-    if (credentials == null) {
-      credentials = {};
-    }
-    credentials.client_id = constants.CLIENT_ID;
-    return http.post(this.baseUrl + "/auth/sign_in", {
-      body: credentials
-    }).then((function(_this) {
-      return function(response) {
-        _this._authorization = response.authorization;
-      };
-    })(this));
   };
 
   WrapClient.prototype.listWraps = function(search) {

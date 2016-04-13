@@ -1,4 +1,3 @@
-assign = require('lodash/assign')
 require('isomorphic-fetch')
 keys = require('lodash/keys')
 methods = require('./constants').HTTP_METHODS
@@ -28,12 +27,11 @@ checkStatus = (response) ->
 makeRequest = (method = 'GET', url, options = {}) ->
 	options.method = method
 
+	options.headers = options.headers || {}
+	options.headers['Accepts'] = 'application/json'
+
 	if options.method != methods.GET
-		options.headers = options.headers || {}
-		assign(options.headers, {
-			'Accepts': 'application/json'
-			'Content-Type': 'application/json'
-		})
+		options.headers['Content-Type'] = 'application/json'
 
 		if options.body
 			options.body = JSON.stringify(options.body)

@@ -3,17 +3,9 @@ http = require('./http')
 Wrap = require('./wrap')
 
 class WrapClient
-	constructor: (@baseUrl) ->
+	constructor: (@apiKey, @baseUrl = constants.PRODUCTION_API_URL) ->
 
-	getAuthHeader: -> { 'Authorization': @_authorization }
-
-	authorize: (credentials = {}) ->
-		credentials.client_id = constants.CLIENT_ID
-		return http.post("#{@baseUrl}/auth/sign_in", { body: credentials })
-			.then((response) =>
-				@_authorization = response.authorization
-				return
-			)
+	getAuthHeader: -> { 'Authorization': "Bearer #{@apiKey}" }
 
 	listWraps: (search) ->
 		return http.get("#{@baseUrl}/wraps", {
