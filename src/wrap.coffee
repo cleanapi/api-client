@@ -1,7 +1,7 @@
 assign = require('lodash/assign')
 constants = require('./constants')
 isObject = require('lodash/isObject')
-http = require('./http')
+wrapFetch = require('./wrapFetch')
 
 class Wrap
 	constructor: (resource, @_client) ->
@@ -29,13 +29,13 @@ class Wrap
 		return cardMap
 
 	_createPersonalizedWrap: (body) ->
-		return http.post("#{@_wrapUrl}/personalize", {
+		return wrapFetch.post("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			body
 		}).then((wrap) => new Wrap(wrap, @_client))
 
 	listPersonalized: (search) ->
-		return http.get("#{@_wrapUrl}/personalize", {
+		return wrapFetch.get("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			search
 		}).then((wraps) =>
@@ -56,13 +56,13 @@ class Wrap
 			)
 
 	deletePersonalized: (body) ->
-		return http.delete("#{@_wrapUrl}/personalize", {
+		return wrapFetch.delete("#{@_wrapUrl}/personalize", {
 			headers: @_client.getAuthHeader()
 			body
 		})
 
 	share: (mobileNumber, body) ->
-		return http.get("#{@_wrapUrl}/share", {
+		return wrapFetch.get("#{@_wrapUrl}/share", {
 			headers: @_client.getAuthHeader()
 			search: {
 				type: constants.MESSAGE_SERVICES.SMS

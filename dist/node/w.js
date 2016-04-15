@@ -1,4 +1,4 @@
-var Wrap, assign, constants, isObject, wrapFetch;
+var Wrap, assign, constants, http, isObject;
 
 assign = require('lodash/assign');
 
@@ -6,7 +6,7 @@ constants = require('./constants');
 
 isObject = require('lodash/isObject');
 
-wrapFetch = require('./wrapFetch');
+http = require('./http');
 
 Wrap = (function() {
   function Wrap(resource, _client) {
@@ -57,7 +57,7 @@ Wrap = (function() {
   };
 
   Wrap.prototype._createPersonalizedWrap = function(body) {
-    return wrapFetch.post(this._wrapUrl + "/personalize", {
+    return http.post(this._wrapUrl + "/personalize", {
       headers: this._client.getAuthHeader(),
       body: body
     }).then((function(_this) {
@@ -68,7 +68,7 @@ Wrap = (function() {
   };
 
   Wrap.prototype.listPersonalized = function(search) {
-    return wrapFetch.get(this._wrapUrl + "/personalize", {
+    return http.get(this._wrapUrl + "/personalize", {
       headers: this._client.getAuthHeader(),
       search: search
     }).then((function(_this) {
@@ -102,14 +102,14 @@ Wrap = (function() {
   };
 
   Wrap.prototype.deletePersonalized = function(body) {
-    return wrapFetch["delete"](this._wrapUrl + "/personalize", {
+    return http["delete"](this._wrapUrl + "/personalize", {
       headers: this._client.getAuthHeader(),
       body: body
     });
   };
 
   Wrap.prototype.share = function(mobileNumber, body) {
-    return wrapFetch.get(this._wrapUrl + "/share", {
+    return http.get(this._wrapUrl + "/share", {
       headers: this._client.getAuthHeader(),
       search: {
         type: constants.MESSAGE_SERVICES.SMS,

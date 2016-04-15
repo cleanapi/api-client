@@ -1,6 +1,6 @@
 require('isomorphic-fetch')
 keys = require('lodash/keys')
-methods = require('./constants').HTTP_METHODS
+HTTP = require('./constants').HTTP_METHODS
 
 
 formatQueryString = (parameters = {}) ->
@@ -30,7 +30,7 @@ makeRequest = (method = 'GET', url, options = {}) ->
 	options.headers = options.headers || {}
 	options.headers['Accepts'] = 'application/json'
 
-	if options.method != methods.GET
+	if options.method != HTTP.GET
 		options.headers['Content-Type'] = 'application/json'
 
 		if options.body
@@ -45,10 +45,10 @@ makeRequest = (method = 'GET', url, options = {}) ->
 		.then(parseJson)
 
 http = {
-	get: (url, options) -> makeRequest(methods.GET, url, options)
-	post: (url, options) -> makeRequest(methods.POST, url, options)
-	put: (url, options) -> makeRequest(methods.PUT, url, options)
-	delete: (url, options) -> makeRequest(methods.DELETE, url, options)
+	get: (url, options) -> makeRequest(HTTP.GET, url, options)
+	post: (url, options) -> makeRequest(HTTP.POST, url, options)
+	put: (url, options) -> makeRequest(HTTP.PUT, url, options)
+	delete: (url, options) -> makeRequest(HTTP.DELETE, url, options)
 }
 
 module.exports = http
