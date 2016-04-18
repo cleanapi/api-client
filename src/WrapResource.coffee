@@ -11,16 +11,12 @@ class WrapResource
 	_getAuthHeader: -> { Authorization: "Bearer #{@_client.apiKey}" }
 
 
-WrapResource.createEndpoint = (spec) ->
-	method = spec?.method || HTTP.GET
-	urlParams = spec?.urlParams || []
-
-	return ->
-		args = [].slice.call(arguments)
-		url = @_getUrl(spec?.path)
+WrapResource.createEndpoint = ({ method = HTTP.GET, path = '', urlParams = [] }) ->
+	return (args...) ->
+		url = @_getUrl(path)
 
 		# expand params in url
-		while urlParams?.length
+		while urlParams.length
 			param = urlParams.shift()
 			arg = args.shift()
 			url = url.replace("{#{param}}", arg)

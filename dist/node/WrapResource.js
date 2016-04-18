@@ -1,4 +1,5 @@
-var HTTP, WrapResource, isObject, wrapFetch;
+var HTTP, WrapResource, isObject, wrapFetch,
+  slice = [].slice;
 
 wrapFetch = require('./wrapFetch');
 
@@ -25,15 +26,14 @@ WrapResource = (function() {
 
 })();
 
-WrapResource.createEndpoint = function(spec) {
-  var method, urlParams;
-  method = (spec != null ? spec.method : void 0) || HTTP.GET;
-  urlParams = (spec != null ? spec.urlParams : void 0) || [];
+WrapResource.createEndpoint = function(arg1) {
+  var method, path, ref, ref1, ref2, urlParams;
+  method = (ref = arg1.method) != null ? ref : HTTP.GET, path = (ref1 = arg1.path) != null ? ref1 : '', urlParams = (ref2 = arg1.urlParams) != null ? ref2 : [];
   return function() {
     var arg, args, options, param, params, url;
-    args = [].slice.call(arguments);
-    url = this._getUrl(spec != null ? spec.path : void 0);
-    while (urlParams != null ? urlParams.length : void 0) {
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    url = this._getUrl(path);
+    while (urlParams.length) {
       param = urlParams.shift();
       arg = args.shift();
       url = url.replace("{" + param + "}", arg);

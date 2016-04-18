@@ -34,7 +34,7 @@ describe('WrapResource', ->
 		)
 
 		it('should append resourcePath to the baseUrl', (done) ->
-			resource.get = WrapResource.createEndpoint()
+			resource.get = WrapResource.createEndpoint({ method: 'GET' })
 			resource.get()
 				.then(->
 					expect(fetchMock.called('https://api.wrap.co/api/this')).toBe(true)
@@ -58,7 +58,7 @@ describe('WrapResource', ->
 
 		describe('with arguments exceeding url parameterization', ->
 			it('should create a query string for GET requests', (done) ->
-				resource.get = WrapResource.createEndpoint()
+				resource.get = WrapResource.createEndpoint({ method: 'GET' })
 				resource.get({
 					page: 3
 					per_page: 20
