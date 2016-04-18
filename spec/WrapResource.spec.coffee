@@ -17,9 +17,7 @@ describe('WrapResource', ->
 		resource = new WrapResource(clientStub)
 	)
 
-	afterEach(->
-		fetchMock.restore()
-	)
+	afterEach(fetchMock.restore)
 
 	describe('createEndpoint', ->
 		beforeEach(->
@@ -74,7 +72,6 @@ describe('WrapResource', ->
 				resource.post = WrapResource.createEndpoint({ method: 'POST' })
 				resource.post({ country: 'USA' })
 					.then(->
-						expect(fetchMock.called('https://api.wrap.co/api/this')).toBe(true)
 						expect(fetchMock.lastOptions('https://api.wrap.co/api/this').body).toEqual(JSON.stringify({ country: 'USA' }))
 						done()
 					)

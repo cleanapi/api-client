@@ -20,19 +20,25 @@ describe('Card', ->
 		card = new Card(clientStub)
 	)
 
-	afterEach(->
-		fetchMock.restore()
-	)
+	afterEach(fetchMock.restore)
 
 	describe('list', ->
 		beforeEach(->
 			fetchMock.mock(requestUrl, 'GET', '[]')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.list()
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			card.list()
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
 				)
@@ -46,10 +52,18 @@ describe('Card', ->
 			fetchMock.mock(requestUrl, 'GET', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.get(cardId)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			card.get(cardId)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
 				)
@@ -65,11 +79,27 @@ describe('Card', ->
 			fetchMock.mock(requestUrl, 'POST', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.clone(cardId, body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a POST request', (done) ->
+			card.clone(cardId, body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			card.clone(cardId, body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)
@@ -85,11 +115,27 @@ describe('Card', ->
 			fetchMock.mock(requestUrl, 'POST', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.batchClone(cardId, body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a POST request', (done) ->
+			card.batchClone(cardId, body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			card.batchClone(cardId, body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)
@@ -103,10 +149,18 @@ describe('Card', ->
 			fetchMock.mock(requestUrl, 'DELETE', { status: 204 })
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.delete(cardId)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a DELETE request', (done) ->
+			card.delete(cardId)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('DELETE')
 					done()
 				)
@@ -121,11 +175,27 @@ describe('Card', ->
 			fetchMock.mock(requestUrl, 'DELETE', { status: 204 })
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			card.batchDelete(body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a DELETE request', (done) ->
+			card.batchDelete(body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('DELETE')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			card.batchDelete(body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)

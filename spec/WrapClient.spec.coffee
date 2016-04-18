@@ -23,17 +23,24 @@ describe('WrapClient', ->
 			})
 		)
 
-		afterEach(->
-			fetchMock.restore()
-		)
+		afterEach(fetchMock.restore)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			client.listWraps()
 				.then(->
-					expect(fetchMock.lastUrl(url)).toBe(url)
-					expect(fetchMock.lastOptions(url).method).toBe(HTTP.GET)
+					expect(fetchMock.lastUrl(url)).toEqual(url)
 					done()
 				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			client.listWraps()
+				.then(->
+					expect(fetchMock.lastOptions(url).method).toEqual('GET')
+					done()
+				)
+				.catch(done.fail)
 		)
 
 		it('should have Wrap instances in the response', (done) ->
@@ -60,13 +67,22 @@ describe('WrapClient', ->
 			fetchMock.restore()
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			client.getWrap(wrapId)
 				.then(->
-					expect(fetchMock.lastUrl(url)).toBe(url)
-					expect(fetchMock.lastOptions(url).method).toBe(HTTP.GET)
+					expect(fetchMock.lastUrl(url)).toEqual(url)
 					done()
 				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			client.getWrap(wrapId)
+				.then(->
+					expect(fetchMock.lastOptions(url).method).toEqual('GET')
+					done()
+				)
+				.catch(done.fail)
 		)
 
 		it('should have a Wrap instance in the response', (done) ->

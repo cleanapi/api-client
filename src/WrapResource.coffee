@@ -16,19 +16,20 @@ WrapResource.createEndpoint = ({ method = HTTP.GET, path = '', urlParams = [] })
 		url = @_getUrl(path)
 
 		# expand params in url
-		while urlParams.length
-			param = urlParams.shift()
+		params = urlParams.slice()
+		while params.length
+			param = params.shift()
 			arg = args.shift()
 			url = url.replace("{#{param}}", arg)
 
 		options = { headers: @_getAuthHeader() }
 
-		params = args.shift()
-		if isObject(params)
+		body = args.shift()
+		if isObject(body)
 			if method == HTTP.GET
-				options.search = params
+				options.search = body
 			else
-				options.body = params
+				options.body = body
 
 		method = method.toLowerCase()
 		return wrapFetch[method](url, options)

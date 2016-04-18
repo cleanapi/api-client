@@ -13,15 +13,13 @@ clientStub = {
 }
 
 
-describe('Card', ->
+describe('Job', ->
 	beforeEach(->
 		requestUrl = "#{BASE_URL}/jobs"
 		job = new Job(clientStub)
 	)
 
-	afterEach(->
-		fetchMock.restore()
-	)
+	afterEach(fetchMock.restore)
 
 	describe('status', ->
 		beforeEach(->

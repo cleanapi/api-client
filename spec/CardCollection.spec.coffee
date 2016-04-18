@@ -20,9 +20,7 @@ describe('CardCollection', ->
 		cardCollection = new CardCollection(clientStub)
 	)
 
-	afterEach(->
-		fetchMock.restore()
-	)
+	afterEach(fetchMock.restore)
 
 	describe('create', ->
 		body = { name: 'myCardCollection' }
@@ -31,11 +29,27 @@ describe('CardCollection', ->
 			fetchMock.mock(requestUrl, 'POST', '[]')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			cardCollection.create(body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a POST request', (done) ->
+			cardCollection.create(body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			cardCollection.create(body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)
@@ -48,10 +62,18 @@ describe('CardCollection', ->
 			fetchMock.mock(requestUrl, 'GET', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			cardCollection.list()
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			cardCollection.list()
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
 				)
@@ -65,10 +87,18 @@ describe('CardCollection', ->
 			fetchMock.mock(requestUrl, 'GET', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			cardCollection.get(cardCollectionId)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			cardCollection.get(cardCollectionId)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
 				)
@@ -84,11 +114,28 @@ describe('CardCollection', ->
 			fetchMock.mock(requestUrl, 'PUT', '{}')
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			cardCollection.update(cardCollectionId, body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a PUT request', (done) ->
+			cardCollection.update(cardCollectionId, body)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			cardCollection.update(cardCollectionId, body)
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)
 				.catch(done.fail)
@@ -101,10 +148,18 @@ describe('CardCollection', ->
 			fetchMock.mock(requestUrl, 'DELETE', { status: 204 })
 		)
 
-		it('should have a correctly configured fetch request', (done) ->
+		it('should have the correct URL', (done) ->
 			cardCollection.delete(cardCollectionId)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a DELETE request', (done) ->
+			cardCollection.delete(cardCollectionId)
+				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('DELETE')
 					done()
 				)
