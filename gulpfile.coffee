@@ -6,12 +6,14 @@ contains = require('gulp-contains')
 gulp = require('gulp')
 gulpUtil = require('gulp-util')
 jasmine = require('gulp-jasmine')
+SpecReporter = require('jasmine-spec-reporter')
 karma = require('karma')
 path = require('path')
 rename = require('gulp-rename')
 uglify = require('gulp-uglify')
 webpack = require('gulp-webpack')
 webpackConfig = require('./webpack-config')
+
 
 WARNINGS_LIST = [
 	'console.log'
@@ -58,7 +60,7 @@ lint = ->
 
 testNode = ->
 	gulp.src(['./spec/**/*.spec.coffee'])
-		.pipe(jasmine())
+		.pipe(jasmine({ reporter: new SpecReporter() }))
 
 testBrowser = (done) ->
 	new karma.Server({
@@ -67,10 +69,13 @@ testBrowser = (done) ->
 	}, done).start()
 
 gulp.task('default', ['build'])
-gulp.task('build', ['build:browser', 'build:node'])
+gulp.task('build', ['lint', 'build:browser', 'build:node'])
 gulp.task('build:browser', buildBrowser)
-gulp.task('build:node', ['lint'], buildNode)
-gulp.task('watch', -> gulp.watch('./src/*', build))
+gulp.task('build:node', buildNode)
+gulp.task('watch', ->
+	gulp.watch('./src/*', ['build'])
+	gulp.watch(['./src/*', './spec/*'], ['test:node'])
+)
 gulp.task('lint', lint)
 gulp.task('test:browser', testBrowser)
 gulp.task('test:node', testNode)

@@ -1,15 +1,24 @@
-var Wrap, WrapClient, constants, http;
+var Card, CardCollection, Job, Wrap, WrapClient, constants, wrapFetch;
 
 constants = require('./constants');
 
-http = require('./http');
+wrapFetch = require('./wrapFetch');
 
-Wrap = require('./wrap');
+Wrap = require('./Wrap');
+
+Card = require('./Card');
+
+CardCollection = require('./CardCollection');
+
+Job = require('./Job');
 
 WrapClient = (function() {
   function WrapClient(apiKey, baseUrl) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl != null ? baseUrl : constants.PRODUCTION_API_URL;
+    this.cards = new Card(this);
+    this.cardCollections = new CardCollection(this);
+    this.jobs = new Job(this);
   }
 
   WrapClient.prototype.getAuthHeader = function() {
@@ -19,7 +28,7 @@ WrapClient = (function() {
   };
 
   WrapClient.prototype.listWraps = function(search) {
-    return http.get(this.baseUrl + "/wraps", {
+    return wrapFetch.get(this.baseUrl + "/wraps", {
       headers: this.getAuthHeader(),
       search: search
     }).then((function(_this) {
@@ -32,7 +41,7 @@ WrapClient = (function() {
   };
 
   WrapClient.prototype.getWrap = function(wrapId, search) {
-    return http.get(this.baseUrl + "/wraps/" + wrapId, {
+    return wrapFetch.get(this.baseUrl + "/wraps/" + wrapId, {
       headers: this.getAuthHeader(),
       search: search
     }).then((function(_this) {

@@ -157,18 +157,27 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Wrap, WrapClient, constants, http;
+	var Card, CardCollection, Job, Wrap, WrapClient, constants, wrapFetch;
 
 	constants = __webpack_require__(3);
 
-	http = __webpack_require__(4);
+	wrapFetch = __webpack_require__(4);
 
 	Wrap = __webpack_require__(25);
+
+	Card = __webpack_require__(37);
+
+	CardCollection = __webpack_require__(39);
+
+	Job = __webpack_require__(40);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
 	    this.apiKey = apiKey;
 	    this.baseUrl = baseUrl != null ? baseUrl : constants.PRODUCTION_API_URL;
+	    this.cards = new Card(this);
+	    this.cardCollections = new CardCollection(this);
+	    this.jobs = new Job(this);
 	  }
 
 	  WrapClient.prototype.getAuthHeader = function() {
@@ -178,7 +187,7 @@
 	  };
 
 	  WrapClient.prototype.listWraps = function(search) {
-	    return http.get(this.baseUrl + "/wraps", {
+	    return wrapFetch.get(this.baseUrl + "/wraps", {
 	      headers: this.getAuthHeader(),
 	      search: search
 	    }).then((function(_this) {
@@ -191,7 +200,7 @@
 	  };
 
 	  WrapClient.prototype.getWrap = function(wrapId, search) {
-	    return http.get(this.baseUrl + "/wraps/" + wrapId, {
+	    return wrapFetch.get(this.baseUrl + "/wraps/" + wrapId, {
 	      headers: this.getAuthHeader(),
 	      search: search
 	    }).then((function(_this) {
@@ -217,10 +226,11 @@
 	constants = {
 	  PRODUCTION_API_URL: 'https://api.wrap.co/api',
 	  HTTP_METHODS: {
-	    GET: 'get',
-	    POST: 'post',
-	    PUT: 'put',
-	    DELETE: 'delete'
+	    GET: 'GET',
+	    POST: 'POST',
+	    PUT: 'PUT',
+	    DELETE: 'DELETE',
+	    OPTIONS: 'OPTIONS'
 	  },
 	  MESSAGE_SERVICES: {
 	    SMS: 'sms',
@@ -235,13 +245,13 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, methods, parseJson;
+	var HTTP, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
 
 	__webpack_require__(5);
 
 	keys = __webpack_require__(7);
 
-	methods = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(3).HTTP_METHODS;
 
 	formatQueryString = function(parameters) {
 	  var callback;
@@ -287,7 +297,7 @@
 	  options.method = method;
 	  options.headers = options.headers || {};
 	  options.headers['Accepts'] = 'application/json';
-	  if (options.method !== methods.GET) {
+	  if (options.method !== HTTP.GET) {
 	    options.headers['Content-Type'] = 'application/json';
 	    if (options.body) {
 	      options.body = JSON.stringify(options.body);
@@ -302,16 +312,16 @@
 
 	http = {
 	  get: function(url, options) {
-	    return makeRequest(methods.GET, url, options);
+	    return makeRequest(HTTP.GET, url, options);
 	  },
 	  post: function(url, options) {
-	    return makeRequest(methods.POST, url, options);
+	    return makeRequest(HTTP.POST, url, options);
 	  },
 	  put: function(url, options) {
-	    return makeRequest(methods.PUT, url, options);
+	    return makeRequest(HTTP.PUT, url, options);
 	  },
 	  "delete": function(url, options) {
-	    return makeRequest(methods.DELETE, url, options);
+	    return makeRequest(HTTP.DELETE, url, options);
 	  }
 	};
 
@@ -1349,7 +1359,7 @@
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Wrap, assign, constants, http, isObject;
+	var Wrap, assign, constants, isObject, wrapFetch;
 
 	assign = __webpack_require__(26);
 
@@ -1357,7 +1367,7 @@
 
 	isObject = __webpack_require__(18);
 
-	http = __webpack_require__(4);
+	wrapFetch = __webpack_require__(4);
 
 	Wrap = (function() {
 	  function Wrap(resource, _client) {
@@ -1408,7 +1418,7 @@
 	  };
 
 	  Wrap.prototype._createPersonalizedWrap = function(body) {
-	    return http.post(this._wrapUrl + "/personalize", {
+	    return wrapFetch.post(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      body: body
 	    }).then((function(_this) {
@@ -1419,7 +1429,7 @@
 	  };
 
 	  Wrap.prototype.listPersonalized = function(search) {
-	    return http.get(this._wrapUrl + "/personalize", {
+	    return wrapFetch.get(this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      search: search
 	    }).then((function(_this) {
@@ -1453,14 +1463,14 @@
 	  };
 
 	  Wrap.prototype.deletePersonalized = function(body) {
-	    return http["delete"](this._wrapUrl + "/personalize", {
+	    return wrapFetch["delete"](this._wrapUrl + "/personalize", {
 	      headers: this._client.getAuthHeader(),
 	      body: body
 	    });
 	  };
 
 	  Wrap.prototype.share = function(mobileNumber, body) {
-	    return http.get(this._wrapUrl + "/share", {
+	    return wrapFetch.get(this._wrapUrl + "/share", {
 	      headers: this._client.getAuthHeader(),
 	      search: {
 	        type: constants.MESSAGE_SERVICES.SMS,
@@ -1941,6 +1951,220 @@
 	}
 
 	module.exports = toNumber;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Card, HTTP, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(38);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Card = (function(superClass) {
+	  extend(Card, superClass);
+
+	  function Card(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/cards';
+	  }
+
+	  Card.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  Card.prototype.get = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.clone = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/clone',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.batchClone = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/batch_clone',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype["delete"] = createEndpoint({
+	    method: HTTP.DELETE,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.batchDelete = createEndpoint({
+	    method: HTTP.DELETE
+	  });
+
+	  return Card;
+
+	})(WrapResource);
+
+	module.exports = Card;
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var HTTP, WrapResource, isObject, wrapFetch,
+	  slice = [].slice;
+
+	wrapFetch = __webpack_require__(4);
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	isObject = __webpack_require__(18);
+
+	WrapResource = (function() {
+	  function WrapResource(_client) {
+	    this._client = _client;
+	  }
+
+	  WrapResource.prototype._getUrl = function(path) {
+	    return this._client.baseUrl + this.resourcePath + (path || '');
+	  };
+
+	  WrapResource.prototype._getAuthHeader = function() {
+	    return {
+	      Authorization: "Bearer " + this._client.apiKey
+	    };
+	  };
+
+	  return WrapResource;
+
+	})();
+
+	WrapResource.createEndpoint = function(arg1) {
+	  var method, path, ref, ref1, ref2, urlParams;
+	  method = (ref = arg1.method) != null ? ref : HTTP.GET, path = (ref1 = arg1.path) != null ? ref1 : '', urlParams = (ref2 = arg1.urlParams) != null ? ref2 : [];
+	  return function() {
+	    var arg, args, body, options, param, params, url;
+	    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+	    url = this._getUrl(path);
+	    params = urlParams.slice();
+	    while (params.length) {
+	      param = params.shift();
+	      arg = args.shift();
+	      url = url.replace("{" + param + "}", arg);
+	    }
+	    options = {
+	      headers: this._getAuthHeader()
+	    };
+	    body = args.shift();
+	    if (isObject(body)) {
+	      if (method === HTTP.GET) {
+	        options.search = body;
+	      } else {
+	        options.body = body;
+	      }
+	    }
+	    method = method.toLowerCase();
+	    return wrapFetch[method](url, options);
+	  };
+	};
+
+	module.exports = WrapResource;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Card, HTTP, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(38);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Card = (function(superClass) {
+	  extend(Card, superClass);
+
+	  function Card(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/card_collections';
+	  }
+
+	  Card.prototype.create = createEndpoint({
+	    method: HTTP.POST
+	  });
+
+	  Card.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  Card.prototype.get = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.update = createEndpoint({
+	    method: HTTP.PUT,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype["delete"] = createEndpoint({
+	    method: HTTP.DELETE,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  return Card;
+
+	})(WrapResource);
+
+	module.exports = Card;
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var HTTP, Job, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(38);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Job = (function(superClass) {
+	  extend(Job, superClass);
+
+	  function Job(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/jobs';
+	  }
+
+	  Job.prototype.status = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/status'
+	  });
+
+	  return Job;
+
+	})(WrapResource);
+
+	module.exports = Job;
 
 
 /***/ }

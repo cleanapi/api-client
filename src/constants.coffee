@@ -1,10 +1,11 @@
 constants = {
 	PRODUCTION_API_URL: 'https://api.wrap.co/api'
 	HTTP_METHODS: {
-		GET: 'get'
-		POST: 'post'
-		PUT: 'put'
-		DELETE: 'delete'
+		GET: 'GET'
+		POST: 'POST'
+		PUT: 'PUT'
+		DELETE: 'DELETE'
+		OPTIONS: 'OPTIONS'
 	}
 	MESSAGE_SERVICES: {
 		SMS: 'sms'

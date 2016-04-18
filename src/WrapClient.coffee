@@ -1,14 +1,20 @@
 constants = require('./constants')
-http = require('./http')
-Wrap = require('./wrap')
+wrapFetch = require('./wrapFetch')
+Wrap = require('./Wrap')
+Card = require('./Card')
+CardCollection = require('./CardCollection')
+Job = require('./Job')
 
 class WrapClient
 	constructor: (@apiKey, @baseUrl = constants.PRODUCTION_API_URL) ->
+		@cards = new Card(@)
+		@cardCollections = new CardCollection(@)
+		@jobs = new Job(@)
 
 	getAuthHeader: -> { 'Authorization': "Bearer #{@apiKey}" }
 
 	listWraps: (search) ->
-		return http.get("#{@baseUrl}/wraps", {
+		return wrapFetch.get("#{@baseUrl}/wraps", {
 			headers: @getAuthHeader()
 			search
 		}).then((wraps) =>
@@ -16,7 +22,7 @@ class WrapClient
 		)
 
 	getWrap: (wrapId, search) ->
-		return http.get("#{@baseUrl}/wraps/#{wrapId}", {
+		return wrapFetch.get("#{@baseUrl}/wraps/#{wrapId}", {
 			headers: @getAuthHeader()
 			search
 		}).then((wrap) => new Wrap(wrap, @))

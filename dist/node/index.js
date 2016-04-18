@@ -1,6 +1,6 @@
 var WrapClient;
 
-WrapClient = require('./wrapClient');
+WrapClient = require('./WrapClient');
 
 if (typeof window !== "undefined" && window !== null) {
   window.Wrap = WrapClient;

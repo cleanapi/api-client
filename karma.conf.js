@@ -50,17 +50,22 @@ module.exports = function(config) {
     plugins: [
         'karma-jasmine',
         'karma-phantomjs-launcher',
-        'karma-webpack'
+        'karma-webpack',
+        'karma-spec-reporter'
     ],
 
 
     webpack: webpackConfig,
 
+    webpackMiddleware: {
+        noInfo: true
+    },
+
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['spec'],
 
 
     // web server port
