@@ -1,6 +1,5 @@
 require('isomorphic-fetch')
 fetchMock = require('fetch-mock')
-fail = require('./helpers').fail
 BASE_URL = require('./helpers').BASE_URL
 API_KEY = require('./helpers').API_KEY
 
@@ -37,7 +36,7 @@ describe('Card', ->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
 				)
-				.catch(fail(done))
+				.catch(done.fail)
 		)
 	)
 )
