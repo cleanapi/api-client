@@ -1,74 +1,79 @@
-assign = require('lodash/assign')
-constants = require('./constants')
-isObject = require('lodash/isObject')
-wrapFetch = require('./wrapFetch')
+WrapResource = require('./WrapResource')
+createEndpoint = WrapResource.createEndpoint
+HTTP = require('./constants').HTTP_METHODS
 
-class Wrap
-	constructor: (resource, @_client) ->
-		assign(@, resource)
-		@_wrapUrl = "#{@_client.baseUrl}/wraps/#{@id}"
+class Wrap extends WrapResource
+	constructor: (@_client) ->
+		@resourcePath = '/wraps'
 
-	_createCardMap: (sourceCards, targetCards) ->
-		cardMap = {}
-		sourceCards.forEach((card, index) -> cardMap[card.id] = targetCards[index].id)
-		return cardMap
+	list: createEndpoint({
+		method: HTTP.GET
+	})
 
-	_convertSchemaMapToCards: (schemaMap) ->
-		for id, schema of schemaMap
-			{ id, schema }
+	get: createEndpoint({
+		method: HTTP.GET
+		path: '/{id}'
+		urlParams: ['id']
+	})
 
-	_assignTargetIds: (sourceCards, targetCards) ->
-		cardMap = @_createCardMap(@cards, targetCards)
-		for card in sourceCards
-			card.id = cardMap[card.id]
-		return sourceCards
+	delete: createEndpoint({
+		method: HTTP.DELETE
+		path: '/{id}'
+		urlParams: ['id']
+	})
 
-	_convertCardsToSchemaMap: (cards) ->
-		cardMap = {}
-		cards.forEach((card, index) -> cardMap[card.id] = card.schema)
-		return cardMap
+	publish: createEndpoint({
+		method: HTTP.POST
+		path: '/{id}/publish'
+		urlParams: ['id']
+	})
 
-	_createPersonalizedWrap: (body) ->
-		return wrapFetch.post("#{@_wrapUrl}/personalize", {
-			headers: @_client.getAuthHeader()
-			body
-		}).then((wrap) => new Wrap(wrap, @_client))
+	share: createEndpoint({
+		method: HTTP.POST
+		path: '/{id}/share'
+		urlParams: ['id']
+	})
 
-	listPersonalized: (search) ->
-		return wrapFetch.get("#{@_wrapUrl}/personalize", {
-			headers: @_client.getAuthHeader()
-			search
-		}).then((wraps) =>
-			return wraps.map((wrap) => new Wrap(wrap, @_client))
-		)
+	insertCards: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/insert_cards'
+		urlParams: ['id']
+	})
 
-	createPersonalized: (schemaMap, tags) ->
-		@_client.getWrap(@id, { published: true })
-			.then((publishedWrap) =>
-				body = { tags }
-				if isObject(schemaMap)
-					cards = @_convertSchemaMapToCards(schemaMap)
-					cards = @_assignTargetIds(cards, publishedWrap.cards)
-					body.personalized_json = @_convertCardsToSchemaMap(cards)
-				else
-					body.url = schemaMap
-				return @_createPersonalizedWrap(body)
-			)
+	deleteCards: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/delete_cards'
+		urlParams: ['id']
+	})
 
-	deletePersonalized: (body) ->
-		return wrapFetch.delete("#{@_wrapUrl}/personalize", {
-			headers: @_client.getAuthHeader()
-			body
-		})
+	replaceCard: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/replace_card'
+		urlParams: ['id']
+	})
 
-	share: (mobileNumber, body) ->
-		return wrapFetch.get("#{@_wrapUrl}/share", {
-			headers: @_client.getAuthHeader()
-			search: {
-				type: constants.MESSAGE_SERVICES.SMS
-				phone_number: mobileNumber
-				body
-			}
-		})
+	setCards: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/set_cards'
+		urlParams: ['id']
+	})
+
+	createPersonalized: createEndpoint({
+		method: HTTP.POST
+		path: '/{id}/personalize'
+		urlParams: ['id']
+	})
+
+	listPersonalized: createEndpoint({
+		method: HTTP.GET
+		path: '/{id}/personalize'
+		urlParams: ['id']
+	})
+
+	deletePersonalized: createEndpoint({
+		method: HTTP.DELETE
+		path: '/{id}/personalize'
+		urlParams: ['id']
+	})
 
 module.exports = Wrap

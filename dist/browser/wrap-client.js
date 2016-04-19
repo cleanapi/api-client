@@ -157,19 +157,17 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Card, CardCollection, Job, Wrap, WrapClient, constants, wrapFetch;
+	var Card, CardCollection, Job, Wrap, WrapClient, constants;
 
 	constants = __webpack_require__(3);
 
-	wrapFetch = __webpack_require__(4);
+	Card = __webpack_require__(4);
 
-	Wrap = __webpack_require__(25);
+	CardCollection = __webpack_require__(27);
 
-	Card = __webpack_require__(37);
+	Job = __webpack_require__(28);
 
-	CardCollection = __webpack_require__(39);
-
-	Job = __webpack_require__(40);
+	Wrap = __webpack_require__(29);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -178,37 +176,8 @@
 	    this.cards = new Card(this);
 	    this.cardCollections = new CardCollection(this);
 	    this.jobs = new Job(this);
+	    this.wraps = new Wrap(this);
 	  }
-
-	  WrapClient.prototype.getAuthHeader = function() {
-	    return {
-	      'Authorization': "Bearer " + this.apiKey
-	    };
-	  };
-
-	  WrapClient.prototype.listWraps = function(search) {
-	    return wrapFetch.get(this.baseUrl + "/wraps", {
-	      headers: this.getAuthHeader(),
-	      search: search
-	    }).then((function(_this) {
-	      return function(wraps) {
-	        return wraps.map(function(wrap) {
-	          return new Wrap(wrap, _this);
-	        });
-	      };
-	    })(this));
-	  };
-
-	  WrapClient.prototype.getWrap = function(wrapId, search) {
-	    return wrapFetch.get(this.baseUrl + "/wraps/" + wrapId, {
-	      headers: this.getAuthHeader(),
-	      search: search
-	    }).then((function(_this) {
-	      return function(wrap) {
-	        return new Wrap(wrap, _this);
-	      };
-	    })(this));
-	  };
 
 	  return WrapClient;
 
@@ -245,11 +214,136 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var Card, HTTP, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(5);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Card = (function(superClass) {
+	  extend(Card, superClass);
+
+	  function Card(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/cards';
+	  }
+
+	  Card.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  Card.prototype.get = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.clone = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/clone',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.batchClone = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/batch_clone',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype["delete"] = createEndpoint({
+	    method: HTTP.DELETE,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Card.prototype.batchDelete = createEndpoint({
+	    method: HTTP.DELETE
+	  });
+
+	  return Card;
+
+	})(WrapResource);
+
+	module.exports = Card;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var HTTP, WrapResource, isObject, wrapFetch,
+	  slice = [].slice;
+
+	wrapFetch = __webpack_require__(6);
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	isObject = __webpack_require__(20);
+
+	WrapResource = (function() {
+	  function WrapResource(_client) {
+	    this._client = _client;
+	  }
+
+	  WrapResource.prototype._getUrl = function(path) {
+	    return this._client.baseUrl + this.resourcePath + (path || '');
+	  };
+
+	  WrapResource.prototype._getAuthHeader = function() {
+	    return {
+	      Authorization: "Bearer " + this._client.apiKey
+	    };
+	  };
+
+	  return WrapResource;
+
+	})();
+
+	WrapResource.createEndpoint = function(arg1) {
+	  var method, path, ref, ref1, ref2, urlParams;
+	  method = (ref = arg1.method) != null ? ref : HTTP.GET, path = (ref1 = arg1.path) != null ? ref1 : '', urlParams = (ref2 = arg1.urlParams) != null ? ref2 : [];
+	  return function() {
+	    var arg, args, body, options, param, params, url;
+	    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+	    url = this._getUrl(path);
+	    params = urlParams.slice();
+	    while (params.length) {
+	      param = params.shift();
+	      arg = args.shift();
+	      url = url.replace("{" + param + "}", arg);
+	    }
+	    options = {
+	      headers: this._getAuthHeader()
+	    };
+	    body = args.shift();
+	    if (isObject(body)) {
+	      if (method === HTTP.GET) {
+	        options.search = body;
+	      } else {
+	        options.body = body;
+	      }
+	    }
+	    method = method.toLowerCase();
+	    return wrapFetch[method](url, options);
+	  };
+	};
+
+	module.exports = WrapResource;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var HTTP, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
 
-	__webpack_require__(5);
+	__webpack_require__(7);
 
-	keys = __webpack_require__(7);
+	keys = __webpack_require__(9);
 
 	HTTP = __webpack_require__(3).HTTP_METHODS;
 
@@ -329,19 +423,19 @@
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// the whatwg-fetch polyfill installs the fetch() function
 	// on the global object (window or self)
 	//
 	// Return that as the export for use in Webpack, Browserify etc.
-	__webpack_require__(6);
+	__webpack_require__(8);
 	module.exports = self.fetch.bind(self);
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports) {
 
 	(function(self) {
@@ -736,15 +830,15 @@
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHas = __webpack_require__(8),
-	    baseKeys = __webpack_require__(9),
-	    indexKeys = __webpack_require__(10),
-	    isArrayLike = __webpack_require__(14),
-	    isIndex = __webpack_require__(23),
-	    isPrototype = __webpack_require__(24);
+	var baseHas = __webpack_require__(10),
+	    baseKeys = __webpack_require__(11),
+	    indexKeys = __webpack_require__(12),
+	    isArrayLike = __webpack_require__(16),
+	    isIndex = __webpack_require__(25),
+	    isPrototype = __webpack_require__(26);
 
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -797,7 +891,7 @@
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -829,7 +923,7 @@
 
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -851,14 +945,14 @@
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(11),
-	    isArguments = __webpack_require__(12),
-	    isArray = __webpack_require__(21),
-	    isLength = __webpack_require__(19),
-	    isString = __webpack_require__(22);
+	var baseTimes = __webpack_require__(13),
+	    isArguments = __webpack_require__(14),
+	    isArray = __webpack_require__(23),
+	    isLength = __webpack_require__(21),
+	    isString = __webpack_require__(24);
 
 	/**
 	 * Creates an array of index keys for `object` values of arrays,
@@ -881,7 +975,7 @@
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -907,10 +1001,10 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLikeObject = __webpack_require__(13);
+	var isArrayLikeObject = __webpack_require__(15);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -956,11 +1050,11 @@
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(14),
-	    isObjectLike = __webpack_require__(20);
+	var isArrayLike = __webpack_require__(16),
+	    isObjectLike = __webpack_require__(22);
 
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -993,12 +1087,12 @@
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getLength = __webpack_require__(15),
-	    isFunction = __webpack_require__(17),
-	    isLength = __webpack_require__(19);
+	var getLength = __webpack_require__(17),
+	    isFunction = __webpack_require__(19),
+	    isLength = __webpack_require__(21);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -1033,10 +1127,10 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(16);
+	var baseProperty = __webpack_require__(18);
 
 	/**
 	 * Gets the "length" property value of `object`.
@@ -1054,7 +1148,7 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1074,10 +1168,10 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(18);
+	var isObject = __webpack_require__(20);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
@@ -1120,7 +1214,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -1155,7 +1249,7 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -1194,7 +1288,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1228,7 +1322,7 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/**
@@ -1260,11 +1354,11 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(21),
-	    isObjectLike = __webpack_require__(20);
+	var isArray = __webpack_require__(23),
+	    isObjectLike = __webpack_require__(22);
 
 	/** `Object#toString` result references. */
 	var stringTag = '[object String]';
@@ -1303,7 +1397,7 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -1330,10 +1424,10 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(17);
+	var isFunction = __webpack_require__(19);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1356,737 +1450,14 @@
 
 
 /***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Wrap, assign, constants, isObject, wrapFetch;
-
-	assign = __webpack_require__(26);
-
-	constants = __webpack_require__(3);
-
-	isObject = __webpack_require__(18);
-
-	wrapFetch = __webpack_require__(4);
-
-	Wrap = (function() {
-	  function Wrap(resource, _client) {
-	    this._client = _client;
-	    assign(this, resource);
-	    this._wrapUrl = this._client.baseUrl + "/wraps/" + this.id;
-	  }
-
-	  Wrap.prototype._createCardMap = function(sourceCards, targetCards) {
-	    var cardMap;
-	    cardMap = {};
-	    sourceCards.forEach(function(card, index) {
-	      return cardMap[card.id] = targetCards[index].id;
-	    });
-	    return cardMap;
-	  };
-
-	  Wrap.prototype._convertSchemaMapToCards = function(schemaMap) {
-	    var id, results, schema;
-	    results = [];
-	    for (id in schemaMap) {
-	      schema = schemaMap[id];
-	      results.push({
-	        id: id,
-	        schema: schema
-	      });
-	    }
-	    return results;
-	  };
-
-	  Wrap.prototype._assignTargetIds = function(sourceCards, targetCards) {
-	    var card, cardMap, i, len;
-	    cardMap = this._createCardMap(this.cards, targetCards);
-	    for (i = 0, len = sourceCards.length; i < len; i++) {
-	      card = sourceCards[i];
-	      card.id = cardMap[card.id];
-	    }
-	    return sourceCards;
-	  };
-
-	  Wrap.prototype._convertCardsToSchemaMap = function(cards) {
-	    var cardMap;
-	    cardMap = {};
-	    cards.forEach(function(card, index) {
-	      return cardMap[card.id] = card.schema;
-	    });
-	    return cardMap;
-	  };
-
-	  Wrap.prototype._createPersonalizedWrap = function(body) {
-	    return wrapFetch.post(this._wrapUrl + "/personalize", {
-	      headers: this._client.getAuthHeader(),
-	      body: body
-	    }).then((function(_this) {
-	      return function(wrap) {
-	        return new Wrap(wrap, _this._client);
-	      };
-	    })(this));
-	  };
-
-	  Wrap.prototype.listPersonalized = function(search) {
-	    return wrapFetch.get(this._wrapUrl + "/personalize", {
-	      headers: this._client.getAuthHeader(),
-	      search: search
-	    }).then((function(_this) {
-	      return function(wraps) {
-	        return wraps.map(function(wrap) {
-	          return new Wrap(wrap, _this._client);
-	        });
-	      };
-	    })(this));
-	  };
-
-	  Wrap.prototype.createPersonalized = function(schemaMap, tags) {
-	    return this._client.getWrap(this.id, {
-	      published: true
-	    }).then((function(_this) {
-	      return function(publishedWrap) {
-	        var body, cards;
-	        body = {
-	          tags: tags
-	        };
-	        if (isObject(schemaMap)) {
-	          cards = _this._convertSchemaMapToCards(schemaMap);
-	          cards = _this._assignTargetIds(cards, publishedWrap.cards);
-	          body.personalized_json = _this._convertCardsToSchemaMap(cards);
-	        } else {
-	          body.url = schemaMap;
-	        }
-	        return _this._createPersonalizedWrap(body);
-	      };
-	    })(this));
-	  };
-
-	  Wrap.prototype.deletePersonalized = function(body) {
-	    return wrapFetch["delete"](this._wrapUrl + "/personalize", {
-	      headers: this._client.getAuthHeader(),
-	      body: body
-	    });
-	  };
-
-	  Wrap.prototype.share = function(mobileNumber, body) {
-	    return wrapFetch.get(this._wrapUrl + "/share", {
-	      headers: this._client.getAuthHeader(),
-	      search: {
-	        type: constants.MESSAGE_SERVICES.SMS,
-	        phone_number: mobileNumber,
-	        body: body
-	      }
-	    });
-	  };
-
-	  return Wrap;
-
-	})();
-
-	module.exports = Wrap;
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var copyObject = __webpack_require__(27),
-	    createAssigner = __webpack_require__(31),
-	    keys = __webpack_require__(7);
-
-	/**
-	 * Assigns own enumerable properties of source objects to the destination
-	 * object. Source objects are applied from left to right. Subsequent sources
-	 * overwrite property assignments of previous sources.
-	 *
-	 * **Note:** This method mutates `object` and is loosely based on
-	 * [`Object.assign`](https://mdn.io/Object/assign).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @returns {Object} Returns `object`.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.c = 3;
-	 * }
-	 *
-	 * function Bar() {
-	 *   this.e = 5;
-	 * }
-	 *
-	 * Foo.prototype.d = 4;
-	 * Bar.prototype.f = 6;
-	 *
-	 * _.assign({ 'a': 1 }, new Foo, new Bar);
-	 * // => { 'a': 1, 'c': 3, 'e': 5 }
-	 */
-	var assign = createAssigner(function(object, source) {
-	  copyObject(source, keys(source), object);
-	});
-
-	module.exports = assign;
-
-
-/***/ },
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObjectWith = __webpack_require__(28);
-
-	/**
-	 * Copies properties of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property names to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObject(source, props, object) {
-	  return copyObjectWith(source, props, object);
-	}
-
-	module.exports = copyObject;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assignValue = __webpack_require__(29);
-
-	/**
-	 * This function is like `copyObject` except that it accepts a function to
-	 * customize copied values.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property names to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @param {Function} [customizer] The function to customize copied values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObjectWith(source, props, object, customizer) {
-	  object || (object = {});
-
-	  var index = -1,
-	      length = props.length;
-
-	  while (++index < length) {
-	    var key = props[index];
-
-	    var newValue = customizer
-	      ? customizer(object[key], source[key], key, object, source)
-	      : source[key];
-
-	    assignValue(object, key, newValue);
-	  }
-	  return object;
-	}
-
-	module.exports = copyObjectWith;
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var eq = __webpack_require__(30);
-
-	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/**
-	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
-	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
-	 * for equality comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function assignValue(object, key, value) {
-	  var objValue = object[key];
-	  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-	      (value === undefined && !(key in object))) {
-	    object[key] = value;
-	  }
-	}
-
-	module.exports = assignValue;
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	/**
-	 * Performs a [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 * var other = { 'user': 'fred' };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-
-	module.exports = eq;
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isIterateeCall = __webpack_require__(32),
-	    rest = __webpack_require__(33);
-
-	/**
-	 * Creates a function like `_.assign`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return rest(function(object, sources) {
-	    var index = -1,
-	        length = sources.length,
-	        customizer = length > 1 ? sources[length - 1] : undefined,
-	        guard = length > 2 ? sources[2] : undefined;
-
-	    customizer = typeof customizer == 'function'
-	      ? (length--, customizer)
-	      : undefined;
-
-	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    object = Object(object);
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, index, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-
-	module.exports = createAssigner;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var eq = __webpack_require__(30),
-	    isArrayLike = __webpack_require__(14),
-	    isIndex = __webpack_require__(23),
-	    isObject = __webpack_require__(18);
-
-	/**
-	 * Checks if the given arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	      ? (isArrayLike(object) && isIndex(index, object.length))
-	      : (type == 'string' && index in object)) {
-	    return eq(object[index], value);
-	  }
-	  return false;
-	}
-
-	module.exports = isIterateeCall;
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var apply = __webpack_require__(34),
-	    toInteger = __webpack_require__(35);
-
-	/** Used as the `TypeError` message for "Functions" methods. */
-	var FUNC_ERROR_TEXT = 'Expected a function';
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-
-	/**
-	 * Creates a function that invokes `func` with the `this` binding of the
-	 * created function and arguments from `start` and beyond provided as an array.
-	 *
-	 * **Note:** This method is based on the [rest parameter](https://mdn.io/rest_parameters).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Function
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 * @example
-	 *
-	 * var say = _.rest(function(what, names) {
-	 *   return what + ' ' + _.initial(names).join(', ') +
-	 *     (_.size(names) > 1 ? ', & ' : '') + _.last(names);
-	 * });
-	 *
-	 * say('hello', 'fred', 'barney', 'pebbles');
-	 * // => 'hello fred, barney, & pebbles'
-	 */
-	function rest(func, start) {
-	  if (typeof func != 'function') {
-	    throw new TypeError(FUNC_ERROR_TEXT);
-	  }
-	  start = nativeMax(start === undefined ? (func.length - 1) : toInteger(start), 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    switch (start) {
-	      case 0: return func.call(this, array);
-	      case 1: return func.call(this, args[0], array);
-	      case 2: return func.call(this, args[0], args[1], array);
-	    }
-	    var otherArgs = Array(start + 1);
-	    index = -1;
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = array;
-	    return apply(func, this, otherArgs);
-	  };
-	}
-
-	module.exports = rest;
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	/**
-	 * A faster alternative to `Function#apply`, this function invokes `func`
-	 * with the `this` binding of `thisArg` and the arguments of `args`.
-	 *
-	 * @private
-	 * @param {Function} func The function to invoke.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {...*} args The arguments to invoke `func` with.
-	 * @returns {*} Returns the result of `func`.
-	 */
-	function apply(func, thisArg, args) {
-	  var length = args.length;
-	  switch (length) {
-	    case 0: return func.call(thisArg);
-	    case 1: return func.call(thisArg, args[0]);
-	    case 2: return func.call(thisArg, args[0], args[1]);
-	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	  }
-	  return func.apply(thisArg, args);
-	}
-
-	module.exports = apply;
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toNumber = __webpack_require__(36);
-
-	/** Used as references for various `Number` constants. */
-	var INFINITY = 1 / 0,
-	    MAX_INTEGER = 1.7976931348623157e+308;
-
-	/**
-	 * Converts `value` to an integer.
-	 *
-	 * **Note:** This function is loosely based on [`ToInteger`](http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to convert.
-	 * @returns {number} Returns the converted integer.
-	 * @example
-	 *
-	 * _.toInteger(3);
-	 * // => 3
-	 *
-	 * _.toInteger(Number.MIN_VALUE);
-	 * // => 0
-	 *
-	 * _.toInteger(Infinity);
-	 * // => 1.7976931348623157e+308
-	 *
-	 * _.toInteger('3');
-	 * // => 3
-	 */
-	function toInteger(value) {
-	  if (!value) {
-	    return value === 0 ? value : 0;
-	  }
-	  value = toNumber(value);
-	  if (value === INFINITY || value === -INFINITY) {
-	    var sign = (value < 0 ? -1 : 1);
-	    return sign * MAX_INTEGER;
-	  }
-	  var remainder = value % 1;
-	  return value === value ? (remainder ? value - remainder : value) : 0;
-	}
-
-	module.exports = toInteger;
-
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isFunction = __webpack_require__(17),
-	    isObject = __webpack_require__(18);
-
-	/** Used as references for various `Number` constants. */
-	var NAN = 0 / 0;
-
-	/** Used to match leading and trailing whitespace. */
-	var reTrim = /^\s+|\s+$/g;
-
-	/** Used to detect bad signed hexadecimal string values. */
-	var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-
-	/** Used to detect binary string values. */
-	var reIsBinary = /^0b[01]+$/i;
-
-	/** Used to detect octal string values. */
-	var reIsOctal = /^0o[0-7]+$/i;
-
-	/** Built-in method references without a dependency on `root`. */
-	var freeParseInt = parseInt;
-
-	/**
-	 * Converts `value` to a number.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to process.
-	 * @returns {number} Returns the number.
-	 * @example
-	 *
-	 * _.toNumber(3);
-	 * // => 3
-	 *
-	 * _.toNumber(Number.MIN_VALUE);
-	 * // => 5e-324
-	 *
-	 * _.toNumber(Infinity);
-	 * // => Infinity
-	 *
-	 * _.toNumber('3');
-	 * // => 3
-	 */
-	function toNumber(value) {
-	  if (isObject(value)) {
-	    var other = isFunction(value.valueOf) ? value.valueOf() : value;
-	    value = isObject(other) ? (other + '') : other;
-	  }
-	  if (typeof value != 'string') {
-	    return value === 0 ? value : +value;
-	  }
-	  value = value.replace(reTrim, '');
-	  var isBinary = reIsBinary.test(value);
-	  return (isBinary || reIsOctal.test(value))
-	    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-	    : (reIsBadHex.test(value) ? NAN : +value);
-	}
-
-	module.exports = toNumber;
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Card, HTTP, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(38);
-
-	createEndpoint = WrapResource.createEndpoint;
-
-	HTTP = __webpack_require__(3).HTTP_METHODS;
-
-	Card = (function(superClass) {
-	  extend(Card, superClass);
-
-	  function Card(_client) {
-	    this._client = _client;
-	    this.resourcePath = '/cards';
-	  }
-
-	  Card.prototype.list = createEndpoint({
-	    method: HTTP.GET
-	  });
-
-	  Card.prototype.get = createEndpoint({
-	    method: HTTP.GET,
-	    path: '/{id}',
-	    urlParams: ['id']
-	  });
-
-	  Card.prototype.clone = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/{id}/clone',
-	    urlParams: ['id']
-	  });
-
-	  Card.prototype.batchClone = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/{id}/batch_clone',
-	    urlParams: ['id']
-	  });
-
-	  Card.prototype["delete"] = createEndpoint({
-	    method: HTTP.DELETE,
-	    path: '/{id}',
-	    urlParams: ['id']
-	  });
-
-	  Card.prototype.batchDelete = createEndpoint({
-	    method: HTTP.DELETE
-	  });
-
-	  return Card;
-
-	})(WrapResource);
-
-	module.exports = Card;
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var HTTP, WrapResource, isObject, wrapFetch,
-	  slice = [].slice;
-
-	wrapFetch = __webpack_require__(4);
-
-	HTTP = __webpack_require__(3).HTTP_METHODS;
-
-	isObject = __webpack_require__(18);
-
-	WrapResource = (function() {
-	  function WrapResource(_client) {
-	    this._client = _client;
-	  }
-
-	  WrapResource.prototype._getUrl = function(path) {
-	    return this._client.baseUrl + this.resourcePath + (path || '');
-	  };
-
-	  WrapResource.prototype._getAuthHeader = function() {
-	    return {
-	      Authorization: "Bearer " + this._client.apiKey
-	    };
-	  };
-
-	  return WrapResource;
-
-	})();
-
-	WrapResource.createEndpoint = function(arg1) {
-	  var method, path, ref, ref1, ref2, urlParams;
-	  method = (ref = arg1.method) != null ? ref : HTTP.GET, path = (ref1 = arg1.path) != null ? ref1 : '', urlParams = (ref2 = arg1.urlParams) != null ? ref2 : [];
-	  return function() {
-	    var arg, args, body, options, param, params, url;
-	    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-	    url = this._getUrl(path);
-	    params = urlParams.slice();
-	    while (params.length) {
-	      param = params.shift();
-	      arg = args.shift();
-	      url = url.replace("{" + param + "}", arg);
-	    }
-	    options = {
-	      headers: this._getAuthHeader()
-	    };
-	    body = args.shift();
-	    if (isObject(body)) {
-	      if (method === HTTP.GET) {
-	        options.search = body;
-	      } else {
-	        options.body = body;
-	      }
-	    }
-	    method = method.toLowerCase();
-	    return wrapFetch[method](url, options);
-	  };
-	};
-
-	module.exports = WrapResource;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Card, HTTP, WrapResource, createEndpoint,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	WrapResource = __webpack_require__(38);
+	WrapResource = __webpack_require__(5);
 
 	createEndpoint = WrapResource.createEndpoint;
 
@@ -2134,14 +1505,14 @@
 
 
 /***/ },
-/* 40 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Job, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(38);
+	WrapResource = __webpack_require__(5);
 
 	createEndpoint = WrapResource.createEndpoint;
 
@@ -2165,6 +1536,105 @@
 	})(WrapResource);
 
 	module.exports = Job;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var HTTP, Wrap, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(5);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Wrap = (function(superClass) {
+	  extend(Wrap, superClass);
+
+	  function Wrap(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/wraps';
+	  }
+
+	  Wrap.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  Wrap.prototype.get = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype["delete"] = createEndpoint({
+	    method: HTTP.DELETE,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.publish = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/publish',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.share = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/share',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.insertCards = createEndpoint({
+	    method: HTTP.PUT,
+	    path: '/{id}/insert_cards',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.deleteCards = createEndpoint({
+	    method: HTTP.PUT,
+	    path: '/{id}/delete_cards',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.replaceCard = createEndpoint({
+	    method: HTTP.PUT,
+	    path: '/{id}/replace_card',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.setCards = createEndpoint({
+	    method: HTTP.PUT,
+	    path: '/{id}/set_cards',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.createPersonalized = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/personalize',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.listPersonalized = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}/personalize',
+	    urlParams: ['id']
+	  });
+
+	  Wrap.prototype.deletePersonalized = createEndpoint({
+	    method: HTTP.DELETE,
+	    path: '/{id}/personalize',
+	    urlParams: ['id']
+	  });
+
+	  return Wrap;
+
+	})(WrapResource);
+
+	module.exports = Wrap;
 
 
 /***/ }

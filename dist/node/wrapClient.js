@@ -1,16 +1,14 @@
-var Card, CardCollection, Job, Wrap, WrapClient, constants, wrapFetch;
+var Card, CardCollection, Job, Wrap, WrapClient, constants;
 
 constants = require('./constants');
-
-wrapFetch = require('./wrapFetch');
-
-Wrap = require('./Wrap');
 
 Card = require('./Card');
 
 CardCollection = require('./CardCollection');
 
 Job = require('./Job');
+
+Wrap = require('./Wrap');
 
 WrapClient = (function() {
   function WrapClient(apiKey, baseUrl) {
@@ -19,37 +17,8 @@ WrapClient = (function() {
     this.cards = new Card(this);
     this.cardCollections = new CardCollection(this);
     this.jobs = new Job(this);
+    this.wraps = new Wrap(this);
   }
-
-  WrapClient.prototype.getAuthHeader = function() {
-    return {
-      'Authorization': "Bearer " + this.apiKey
-    };
-  };
-
-  WrapClient.prototype.listWraps = function(search) {
-    return wrapFetch.get(this.baseUrl + "/wraps", {
-      headers: this.getAuthHeader(),
-      search: search
-    }).then((function(_this) {
-      return function(wraps) {
-        return wraps.map(function(wrap) {
-          return new Wrap(wrap, _this);
-        });
-      };
-    })(this));
-  };
-
-  WrapClient.prototype.getWrap = function(wrapId, search) {
-    return wrapFetch.get(this.baseUrl + "/wraps/" + wrapId, {
-      headers: this.getAuthHeader(),
-      search: search
-    }).then((function(_this) {
-      return function(wrap) {
-        return new Wrap(wrap, _this);
-      };
-    })(this));
-  };
 
   return WrapClient;
 
