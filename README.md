@@ -34,93 +34,53 @@ require('wrap-api-client')
 Copy the `dist/browser/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Native promises are used to handle async operations. A polyfill should be used to support older browsers.
 
 #### Browser compatibility
-Browser support will match our support for Wrap Authoring. That appears to be the most recent releases of FF, Chrome, and Safari as well as Edge.
+Browser support covers the most recent versions of FF, Chrome, Safari, and Edge.
 
 ## Usage
-### Creating a client instance
-The `Wrap` global is a constructor for creating client instances.
-
-#### #WrapClient(apiKey, [url])
+#### Wrap(apiKey, [url])
 The `apiKey` argument is required for authorizing requests to the API server. This can be retrieved from your [Account Settings](https://authoring.wrap.co/#/settings/account) tab.
 The optional `url` argument allows for pointing to API servers other than production.
 
 ```javascript
 # NodeJS
-var WrapClient = require('wrap-api-client');
-var client = new WrapClient('2dba6f6fbc1e11b2eda07c2432914b8b0d45d734c2698834d30fe938c5a7867f');
+var Wrap = require('wrap-api-client');
+var client = new Wrap(API_KEY);
 
 # Browser
-var client = new Wrap('2dba6f6fbc1e11b2eda07c2432914b8b0d45d734c2698834d30fe938c5a7867f')
+var client = new Wrap(API_KEY)
 ```
 
-### Client instance methods
-#### #listWraps([search])
-Returns a list of Wrap resources for an account. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
+### Client resources
+Resources are accessed directly from client instances. Below is a list of available resources and their methods. [Details for specific endpoints can be found here.](https://wrapi.wrap.co/apidocs_public)
 
-#### #getWrap(wrapId, [search])
-Returns a Wrap resource instance for `wrapId`. An optional `search` argument can include filter and sort request parameters. These parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/wraps/Api_Wraps_search_get_0).
+#### Wraps
+* list
+* get
+* delete
+* publish
+* share
+* insertCards
+* deleteCards
+* replaceCard
+* setCards
+* createPersonalized
+* listPersonalized
+* deletePersonalized
 
-### Wrap instance methods
+#### Cards
+* list
+* get
+* clone
+* batchClone
+* delete
+* batchDelete
 
-#### #listPersonalized([search])
-Returns a list of all personalized Wrap resources for a Wrap. An optional `search` argument can include filter parameters.
+#### CardCollections
+* create
+* list
+* get
+* update
+* delete
 
-```javascript
-var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
-client.getWrap(wrapId)
-	.then(function(wrap) {
-		return wrap.listPersonalized({ tags: 'iphone,usa' });
-	})
-	.then(function(personalizedWraps) {
-		// All associated personalized Wraps that are tagged with 'iphone' and 'usa'
-	});
-```
-
-#### #createPersonalized(schemaMap, [tags])
-Creates a new personalized Wrap from the Wrap instance. The supplied `schemaMap` will be used to substitute new data for each card's schemaJson. `schemaMap` should be a hash where each key is a card id and each value the substituted data. Alternately, `schemaMap` can be an absolute url that resolves to the hash. If provided, `tags` should be a string consisting of a comma separated list of tags to be applied to the newly created wrap.
-
-```javascript
-var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
-client.getWrap(wrapId)
-	.then(function(wrap) {
-		var schemaMap = {
-			'b3d4f362-6101-425e-a334-fee5588acde9': {}
-		}
-		var tags = 'iphone, usa, female';
-		return wrap.createPersonalized(schemaMap, tags);
-	})
-	.then(function(personalizedWrap) {
-		// The personalized Wrap resource
-	});
-```
-
-#### #deletePersonalized(filter)
-Deletes personalized Wraps based on the filter. Filter parameters can be reviewed in the [wrapi-rails apidocs](https://wrapi.wrap.co/apidocs#!/personalization/Api_Personalization_destroy_delete_2).
-
-```javascript
-var wrapId = 'ed687f34-a60b-44e5-ae41-73812fb71ca9';
-client.getWrap(wrapId)
-	.then(function(wrap) {
-		return wrap.listPersonalized();
-	})
-	.then(function(personalizedWraps) {
-		ids = personalizedWraps.map(function(personalizedWrap) { return personalizedWrap.id; });
-		return wrap.deletePersonalized({ wrap_ids: ids });
-	})
-	.then(function() {
-		// All of the personalizedWraps were deleted.
-	});
-```
-
-#### #share(mobileNumber, [body])
-Sends an SMS message containing the wrap's canonicalUrl to `mobileNumber`. (Only US phone numbers are currently supported. The country code will be prepended for you.) If supplied, the optional `body` param should be a string containing a `{{wrap}}` token that will be replaced with the canonicalUrl.
-
-```javascript
-client.listWraps()
-	.then(function(wraps) {
-		// Using the default body.
-		wraps[0].share('2125551212');
-		// Using a custom body.
-		wraps[1].share('4155551212', 'Thanks for your business! {{wrap}}');
-	});
-```
+#### Jobs
+* status
