@@ -158,7 +158,7 @@ describe('Wrap', ->
 	)
 
 	describe('insertCards', ->
-		body = { card_ids: '', position: 1 }
+		body = { card_ids: '9d467496-69c4-486d-ba12-511857258f6a,9d467496-69c4-486d-ba12-511857258f6b', position: 1 }
 
 		beforeEach(->
 			requestUrl += "/#{wrapId}/insert_cards"
@@ -230,7 +230,7 @@ describe('Wrap', ->
 	)
 
 	describe('replaceCard', ->
-		body = { card_ids: '', position: 1 }
+		body = { card_ids: '9d467496-69c4-486d-ba12-511857258f6a,9d467496-69c4-486d-ba12-511857258f6b', position: 1 }
 
 		beforeEach(->
 			requestUrl += "/#{wrapId}/replace_card"
@@ -266,7 +266,7 @@ describe('Wrap', ->
 	)
 
 	describe('setCards', ->
-		body = { card_ids: '' }
+		body = { card_ids: '9d467496-69c4-486d-ba12-511857258f6a,9d467496-69c4-486d-ba12-511857258f6b' }
 
 		beforeEach(->
 			requestUrl += "/#{wrapId}/set_cards"
