@@ -38,4 +38,9 @@ class Card extends WrapResource
 		method: HTTP.DELETE
 	})
 
+	collectionSearch: createEndpoint({
+		method: HTTP.GET
+		path: '/collections/search'
+	})
+
 module.exports = Card

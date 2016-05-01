@@ -14,7 +14,6 @@ class WrapResource
 WrapResource.createEndpoint = ({ method = HTTP.GET, path = '', urlParams = [] }) ->
 	return (args...) ->
 		url = @_getUrl(path)
-
 		# expand params in url
 		params = urlParams.slice()
 		while params.length
@@ -31,8 +30,7 @@ WrapResource.createEndpoint = ({ method = HTTP.GET, path = '', urlParams = [] })
 			else
 				options.body = body
 
-		method = method.toLowerCase()
-		return wrapFetch[method](url, options)
+		return wrapFetch[method.toLowerCase()](url, options)
 
 
 module.exports = WrapResource

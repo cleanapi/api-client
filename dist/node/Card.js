@@ -48,6 +48,11 @@ Card = (function(superClass) {
     method: HTTP.DELETE
   });
 
+  Card.prototype.collectionSearch = createEndpoint({
+    method: HTTP.GET,
+    path: '/collections/search'
+  });
+
   return Card;
 
 })(WrapResource);

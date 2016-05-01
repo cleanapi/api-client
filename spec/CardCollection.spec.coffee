@@ -59,7 +59,7 @@ describe('CardCollection', ->
 
 	describe('list', ->
 		beforeEach(->
-			fetchMock.mock(requestUrl, 'GET', '{}')
+			fetchMock.mock(requestUrl, 'GET', '[]')
 		)
 
 		it('should have the correct URL', (done) ->
@@ -73,6 +73,19 @@ describe('CardCollection', ->
 
 		it('should send a GET request', (done) ->
 			cardCollection.list()
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			requestUrl += '?search=test1%2Ctest2'
+			fetchMock.mock(requestUrl, 'GET', '[]')
+
+			body = { search: 'test1,test2' }
+			cardCollection.list(body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()
