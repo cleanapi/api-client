@@ -22,13 +22,17 @@ describe('Job', ->
 	afterEach(fetchMock.restore)
 
 	describe('status', ->
+		body = {
+			token: '9d467496-69c4-486d-ba12-511857258f6a'
+		}
+		
 		beforeEach(->
-			requestUrl += '/status'
+			requestUrl += '/status?token=9d467496-69c4-486d-ba12-511857258f6a'
 			fetchMock.mock(requestUrl, 'GET', '{}')
 		)
 
 		it('should have a correctly configured fetch request', (done) ->
-			job.status()
+			job.status(body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
