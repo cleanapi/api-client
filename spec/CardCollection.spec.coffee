@@ -80,7 +80,7 @@ describe('CardCollection', ->
 				.catch(done.fail)
 		)
 
-		it('should send a GET request', (done) ->
+		it('should send a GET request with search parameters', (done) ->
 			requestUrl += '?search=test1%2Ctest2'
 			fetchMock.mock(requestUrl, 'GET', '[]')
 
