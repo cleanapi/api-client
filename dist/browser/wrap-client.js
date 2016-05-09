@@ -332,8 +332,7 @@
 	        options.body = body;
 	      }
 	    }
-	    method = method.toLowerCase();
-	    return wrapFetch[method](url, options);
+	    return wrapFetch[method.toLowerCase()](url, options);
 	  };
 	};
 
@@ -1611,6 +1610,10 @@
 
 	  Wrap.prototype.list = createEndpoint({
 	    method: HTTP.GET
+	  });
+
+	  Wrap.prototype.createWrapFromCards = createEndpoint({
+	    method: HTTP.POST
 	  });
 
 	  Wrap.prototype.get = createEndpoint({

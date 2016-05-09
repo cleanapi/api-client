@@ -50,8 +50,7 @@ WrapResource.createEndpoint = function(arg1) {
         options.body = body;
       }
     }
-    method = method.toLowerCase();
-    return wrapFetch[method](url, options);
+    return wrapFetch[method.toLowerCase()](url, options);
   };
 };
 

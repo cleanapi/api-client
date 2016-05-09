@@ -20,6 +20,10 @@ Wrap = (function(superClass) {
     method: HTTP.GET
   });
 
+  Wrap.prototype.createWrapFromCards = createEndpoint({
+    method: HTTP.POST
+  });
+
   Wrap.prototype.get = createEndpoint({
     method: HTTP.GET,
     path: '/{id}',
