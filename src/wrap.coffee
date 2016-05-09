@@ -10,6 +10,10 @@ class Wrap extends WrapResource
 		method: HTTP.GET
 	})
 
+	createWrapFromCards: createEndpoint({
+		method: HTTP.POST
+	})
+
 	get: createEndpoint({
 		method: HTTP.GET
 		path: '/{id}'
