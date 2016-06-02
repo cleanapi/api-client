@@ -48,7 +48,7 @@ describe('Widget', ->
 
 	describe('get', ->
 		beforeEach(->
-			requestUrl += "/#{widgetId}"
+			requestUrl = "#{BASE_URL}/widgets/#{widgetId}"
 			fetchMock.mock(requestUrl, 'GET', '{}')
 		)
 
@@ -110,7 +110,7 @@ describe('Widget', ->
 		body = { name: 'New Widget' }
 
 		beforeEach(->
-			requestUrl += "/#{widgetId}"
+			requestUrl = "#{BASE_URL}/widgets/#{widgetId}"
 			fetchMock.mock(requestUrl, 'PUT', '{}')
 		)
 
@@ -144,7 +144,7 @@ describe('Widget', ->
 
 	describe('delete', ->
 		beforeEach(->
-			requestUrl += "/#{widgetId}"
+			requestUrl = "#{BASE_URL}/widgets/#{widgetId}"
 			fetchMock.mock(requestUrl, 'DELETE', { status: 204 })
 		)
 
