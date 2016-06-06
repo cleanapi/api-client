@@ -69,6 +69,9 @@
 	var queueIndex = -1;
 
 	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -167,7 +170,7 @@
 
 	Job = __webpack_require__(28);
 
-	Wrap = __webpack_require__(29);
+	Wrap = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./Wrap\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -1584,109 +1587,6 @@
 	})(WrapResource);
 
 	module.exports = Job;
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var HTTP, Wrap, WrapResource, createEndpoint,
-	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-	  hasProp = {}.hasOwnProperty;
-
-	WrapResource = __webpack_require__(5);
-
-	createEndpoint = WrapResource.createEndpoint;
-
-	HTTP = __webpack_require__(3).HTTP_METHODS;
-
-	Wrap = (function(superClass) {
-	  extend(Wrap, superClass);
-
-	  function Wrap(_client) {
-	    this._client = _client;
-	    this.resourcePath = '/wraps';
-	  }
-
-	  Wrap.prototype.list = createEndpoint({
-	    method: HTTP.GET
-	  });
-
-	  Wrap.prototype.createWrapFromCards = createEndpoint({
-	    method: HTTP.POST
-	  });
-
-	  Wrap.prototype.get = createEndpoint({
-	    method: HTTP.GET,
-	    path: '/{id}',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype["delete"] = createEndpoint({
-	    method: HTTP.DELETE,
-	    path: '/{id}',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.publish = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/{id}/publish',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.share = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/{id}/share',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.insertCards = createEndpoint({
-	    method: HTTP.PUT,
-	    path: '/{id}/insert_cards',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.deleteCards = createEndpoint({
-	    method: HTTP.PUT,
-	    path: '/{id}/delete_cards',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.replaceCard = createEndpoint({
-	    method: HTTP.PUT,
-	    path: '/{id}/replace_card',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.setCards = createEndpoint({
-	    method: HTTP.PUT,
-	    path: '/{id}/set_cards',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.createPersonalized = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/{id}/personalize',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.listPersonalized = createEndpoint({
-	    method: HTTP.GET,
-	    path: '/{id}/personalize',
-	    urlParams: ['id']
-	  });
-
-	  Wrap.prototype.deletePersonalized = createEndpoint({
-	    method: HTTP.DELETE,
-	    path: '/{id}/personalize',
-	    urlParams: ['id']
-	  });
-
-	  return Wrap;
-
-	})(WrapResource);
-
-	module.exports = Wrap;
 
 
 /***/ }

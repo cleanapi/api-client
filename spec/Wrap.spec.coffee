@@ -156,6 +156,42 @@ describe('Wrap', ->
 		)
 	)
 
+	describe('rename', ->
+		body = { name: 'New Name' }
+
+		beforeEach(->
+			requestUrl = "#{BASE_URL}/wraps/#{wrapId}/rename"
+			fetchMock.mock(requestUrl, 'PUT', '[]')
+		)
+
+		it('should have the correct URL', (done) ->
+			wrap.rename(body)
+				.then(->
+					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a PUT request', (done) ->
+			wrap.rename(body)
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			wrap.rename(body)
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
+					done()
+				)
+				.catch(done.fail)
+		)
+	)
+
 	describe('share', ->
 		body = { phone_number: '2125551234' }
 

@@ -32,6 +32,12 @@ class Wrap extends WrapResource
 		urlParams: ['id']
 	})
 
+	rename: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/rename'
+		urlParams: ['id']
+	})
+
 	share: createEndpoint({
 		method: HTTP.POST
 		path: '/{id}/share'
