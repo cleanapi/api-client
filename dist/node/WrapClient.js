@@ -1,4 +1,4 @@
-var Card, CardCollection, Job, Wrap, WrapClient, constants;
+var Card, CardCollection, Job, Widget, Wrap, WrapClient, constants;
 
 constants = require('./constants');
 
@@ -8,7 +8,9 @@ CardCollection = require('./CardCollection');
 
 Job = require('./Job');
 
-Wrap = require('./Wrap');
+Wrap = require('./wrap');
+
+Widget = require('./Widget');
 
 WrapClient = (function() {
   function WrapClient(apiKey, baseUrl) {
@@ -18,6 +20,7 @@ WrapClient = (function() {
     this.cardCollections = new CardCollection(this);
     this.jobs = new Job(this);
     this.wraps = new Wrap(this);
+    this.widgets = new Widget(this);
   }
 
   return WrapClient;
