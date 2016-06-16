@@ -42,6 +42,12 @@ Wrap = (function(superClass) {
     urlParams: ['id']
   });
 
+  Wrap.prototype.rename = createEndpoint({
+    method: HTTP.PUT,
+    path: '/{id}/rename',
+    urlParams: ['id']
+  });
+
   Wrap.prototype.share = createEndpoint({
     method: HTTP.POST,
     path: '/{id}/share',
