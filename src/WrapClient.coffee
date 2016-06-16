@@ -2,7 +2,8 @@ constants = require('./constants')
 Card = require('./Card')
 CardCollection = require('./CardCollection')
 Job = require('./Job')
-Wrap = require('./Wrap')
+Wrap = require('./wrap')
+Widget = require('./Widget')
 
 class WrapClient
 	constructor: (@apiKey, @baseUrl = constants.PRODUCTION_API_URL) ->
@@ -10,5 +11,6 @@ class WrapClient
 		@cardCollections = new CardCollection(@)
 		@jobs = new Job(@)
 		@wraps = new Wrap(@)
+		@widgets = new Widget(@)
 
 module.exports = WrapClient
