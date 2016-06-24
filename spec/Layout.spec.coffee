@@ -6,7 +6,7 @@ API_KEY = require('./helpers').API_KEY
 Layout = require('../src/Layout')
 
 requestUrl = null
-card = null
+layout = null
 layoutId = '6EF60AA5-0541-408B-B9B5-B202485445F6'
 clientStub = {
 	apiKey: API_KEY
@@ -17,19 +17,18 @@ clientStub = {
 describe('Layout', ->
 	beforeEach(->
 		requestUrl = "#{BASE_URL}/layouts"
-		card = new Layout(clientStub)
+		layout = new Layout(clientStub)
 	)
 
 	afterEach(fetchMock.restore)
 
-	describe('get', ->
+	describe('list', ->
 		beforeEach(->
-			requestUrl += "/#{layoutId}"
-			fetchMock.mock(requestUrl, 'GET', '{}')
+			fetchMock.mock(requestUrl, 'GET', '[]')
 		)
 
 		it('should have the correct URL', (done) ->
-			card.get(layoutId)
+			layout.list()
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
 					done()
@@ -38,7 +37,32 @@ describe('Layout', ->
 		)
 
 		it('should send a GET request', (done) ->
-			card.get(layoutId)
+			layout.list()
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
+					done()
+				)
+				.catch(done.fail)
+		)
+	)
+
+	describe('get', ->
+		beforeEach(->
+			requestUrl += "/#{layoutId}"
+			fetchMock.mock(requestUrl, 'GET', '{}')
+		)
+
+		it('should have the correct URL', (done) ->
+			layout.get(layoutId)
+				.then(->
+					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a GET request', (done) ->
+			layout.get(layoutId)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('GET')
 					done()

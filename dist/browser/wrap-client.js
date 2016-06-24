@@ -1678,6 +1678,10 @@
 	    this.resourcePath = '/layouts';
 	  }
 
+	  Layout.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
 	  Layout.prototype.get = createEndpoint({
 	    method: HTTP.GET,
 	    path: '/{id}',

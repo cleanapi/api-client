@@ -6,6 +6,10 @@ class Layout extends WrapResource
 	constructor: (@_client) ->
 		@resourcePath = '/layouts'
 
+	list: createEndpoint({
+		method: HTTP.GET
+	})
+
 	get: createEndpoint({
 		method: HTTP.GET
 		path: '/{id}'
