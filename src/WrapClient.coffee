@@ -1,4 +1,5 @@
 constants = require('./constants')
+Asset = require('./Asset')
 Card = require('./Card')
 CardCollection = require('./CardCollection')
 Component = require('./Component')
@@ -9,6 +10,7 @@ Widget = require('./Widget')
 
 class WrapClient
 	constructor: (@apiKey, @baseUrl = constants.PRODUCTION_API_URL) ->
+		@assets = new Asset(@)
 		@cards = new Card(@)
 		@cardCollections = new CardCollection(@)
 		@components = new Component(@)
