@@ -185,7 +185,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Card, CardCollection, Job, Widget, Wrap, WrapClient, constants;
+	var Card, CardCollection, Component, Job, Layout, Widget, Wrap, WrapClient, constants;
 
 	constants = __webpack_require__(3);
 
@@ -193,11 +193,15 @@
 
 	CardCollection = __webpack_require__(27);
 
-	Job = __webpack_require__(28);
+	Component = __webpack_require__(28);
 
-	Wrap = __webpack_require__(29);
+	Job = __webpack_require__(29);
 
-	Widget = __webpack_require__(30);
+	Layout = __webpack_require__(30);
+
+	Wrap = __webpack_require__(31);
+
+	Widget = __webpack_require__(32);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -205,7 +209,9 @@
 	    this.baseUrl = baseUrl != null ? baseUrl : constants.PRODUCTION_API_URL;
 	    this.cards = new Card(this);
 	    this.cardCollections = new CardCollection(this);
+	    this.components = new Component(this);
 	    this.jobs = new Job(this);
+	    this.layouts = new Layout(this);
 	    this.wraps = new Wrap(this);
 	    this.widgets = new Widget(this);
 	  }
@@ -1587,6 +1593,39 @@
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var Component, HTTP, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(5);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Component = (function(superClass) {
+	  extend(Component, superClass);
+
+	  function Component(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/components';
+	  }
+
+	  Component.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  return Component;
+
+	})(WrapResource);
+
+	module.exports = Component;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var HTTP, Job, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
@@ -1618,7 +1657,42 @@
 
 
 /***/ },
-/* 29 */
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var HTTP, Layout, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(5);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Layout = (function(superClass) {
+	  extend(Layout, superClass);
+
+	  function Layout(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/layouts';
+	  }
+
+	  Layout.prototype.get = createEndpoint({
+	    method: HTTP.GET,
+	    path: '/{id}',
+	    urlParams: ['id']
+	  });
+
+	  return Layout;
+
+	})(WrapResource);
+
+	module.exports = Layout;
+
+
+/***/ },
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Wrap, WrapResource, createEndpoint,
@@ -1727,7 +1801,7 @@
 
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Widget, WrapResource, createEndpoint,
