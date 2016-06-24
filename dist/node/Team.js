@@ -1,4 +1,4 @@
-var Asset, HTTP, WrapResource, createEndpoint,
+var HTTP, Team, WrapResource, createEndpoint,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -8,21 +8,28 @@ createEndpoint = WrapResource.createEndpoint;
 
 HTTP = require('./constants').HTTP_METHODS;
 
-Asset = (function(superClass) {
-  extend(Asset, superClass);
+Team = (function(superClass) {
+  extend(Team, superClass);
 
-  function Asset(_client) {
+  function Team(_client) {
     this._client = _client;
-    this.resourcePath = '/assets';
+    this.resourcePath = '/teams';
   }
 
-  Asset.prototype.upload = createEndpoint({
+  Team.prototype.createWrap = createEndpoint({
     method: HTTP.POST,
-    path: '/upload'
+    path: '/{id}/wraps',
+    urlParams: ['id']
   });
 
-  return Asset;
+  Team.prototype.createAsset = createEndpoint({
+    method: HTTP.POST,
+    path: '/{teamId}/wraps/{wrapId}/assets',
+    urlParams: ['teamId', 'wrapId']
+  });
+
+  return Team;
 
 })(WrapResource);
 
-module.exports = Asset;
+module.exports = Team;

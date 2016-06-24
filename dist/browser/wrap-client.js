@@ -185,7 +185,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Asset, Card, CardCollection, Component, Job, Layout, Widget, Wrap, WrapClient, constants;
+	var Asset, Card, CardCollection, Component, Job, Layout, Team, Widget, Wrap, WrapClient, constants;
 
 	constants = __webpack_require__(3);
 
@@ -201,9 +201,11 @@
 
 	Layout = __webpack_require__(31);
 
-	Wrap = __webpack_require__(32);
+	Team = __webpack_require__(32);
 
-	Widget = __webpack_require__(33);
+	Wrap = __webpack_require__(33);
+
+	Widget = __webpack_require__(34);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -215,6 +217,7 @@
 	    this.components = new Component(this);
 	    this.jobs = new Job(this);
 	    this.layouts = new Layout(this);
+	    this.teams = new Team(this);
 	    this.wraps = new Wrap(this);
 	    this.widgets = new Widget(this);
 	  }
@@ -269,18 +272,12 @@
 
 	  function Asset(_client) {
 	    this._client = _client;
-	    this.resourcePath = '/';
+	    this.resourcePath = '/assets';
 	  }
 
 	  Asset.prototype.upload = createEndpoint({
 	    method: HTTP.POST,
-	    path: '/assets/upload'
-	  });
-
-	  Asset.prototype.create = createEndpoint({
-	    method: HTTP.POST,
-	    path: '/teams/{teamId}/wraps/{wrapId}/assets',
-	    urlParams: ['teamId', 'wrapId']
+	    path: '/upload'
 	  });
 
 	  return Asset;
@@ -1742,6 +1739,47 @@
 /* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var HTTP, Team, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(5);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(3).HTTP_METHODS;
+
+	Team = (function(superClass) {
+	  extend(Team, superClass);
+
+	  function Team(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/teams';
+	  }
+
+	  Team.prototype.createWrap = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{id}/wraps',
+	    urlParams: ['id']
+	  });
+
+	  Team.prototype.createAsset = createEndpoint({
+	    method: HTTP.POST,
+	    path: '/{teamId}/wraps/{wrapId}/assets',
+	    urlParams: ['teamId', 'wrapId']
+	  });
+
+	  return Team;
+
+	})(WrapResource);
+
+	module.exports = Team;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var HTTP, Wrap, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
@@ -1848,7 +1886,7 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Widget, WrapResource, createEndpoint,

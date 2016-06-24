@@ -5,6 +5,7 @@ CardCollection = require('./CardCollection')
 Component = require('./Component')
 Job = require('./Job')
 Layout = require('./Layout')
+Team = require('./Team')
 Wrap = require('./wrap')
 Widget = require('./Widget')
 
@@ -16,6 +17,7 @@ class WrapClient
 		@components = new Component(@)
 		@jobs = new Job(@)
 		@layouts = new Layout(@)
+		@teams = new Team(@)
 		@wraps = new Wrap(@)
 		@widgets = new Widget(@)
 

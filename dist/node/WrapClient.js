@@ -1,4 +1,4 @@
-var Asset, Card, CardCollection, Component, Job, Layout, Widget, Wrap, WrapClient, constants;
+var Asset, Card, CardCollection, Component, Job, Layout, Team, Widget, Wrap, WrapClient, constants;
 
 constants = require('./constants');
 
@@ -14,6 +14,8 @@ Job = require('./Job');
 
 Layout = require('./Layout');
 
+Team = require('./Team');
+
 Wrap = require('./wrap');
 
 Widget = require('./Widget');
@@ -28,6 +30,7 @@ WrapClient = (function() {
     this.components = new Component(this);
     this.jobs = new Job(this);
     this.layouts = new Layout(this);
+    this.teams = new Team(this);
     this.wraps = new Wrap(this);
     this.widgets = new Widget(this);
   }
