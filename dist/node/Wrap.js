@@ -30,6 +30,12 @@ Wrap = (function(superClass) {
     urlParams: ['id']
   });
 
+  Wrap.prototype.update = createEndpoint({
+    method: HTTP.PUT,
+    path: '/{id}',
+    urlParams: ['id']
+  });
+
   Wrap.prototype["delete"] = createEndpoint({
     method: HTTP.DELETE,
     path: '/{id}',

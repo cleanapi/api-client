@@ -20,6 +20,12 @@ class Wrap extends WrapResource
 		urlParams: ['id']
 	})
 
+	update: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}'
+		urlParams: ['id']
+	})
+
 	delete: createEndpoint({
 		method: HTTP.DELETE
 		path: '/{id}'
