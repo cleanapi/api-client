@@ -16,9 +16,9 @@ Asset = (function(superClass) {
     this.resourcePath = '/assets';
   }
 
-  Asset.prototype.upload = createEndpoint({
+  Asset.prototype.createUpload = createEndpoint({
     method: HTTP.POST,
-    path: '/upload'
+    path: '/uploads'
   });
 
   return Asset;

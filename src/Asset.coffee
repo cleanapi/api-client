@@ -6,9 +6,9 @@ class Asset extends WrapResource
 	constructor: (@_client) ->
 		@resourcePath = '/assets'
 
-	upload: createEndpoint({
+	createUpload: createEndpoint({
 		method: HTTP.POST
-		path: '/upload'
+		path: '/uploads'
 	})
 
 module.exports = Asset
