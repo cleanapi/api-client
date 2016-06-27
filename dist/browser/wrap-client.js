@@ -44,168 +44,42 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var WrapClient;
+	var WrapClient;
 
-	WrapClient = __webpack_require__(2);
+	WrapClient = __webpack_require__(1);
 
 	if (typeof window !== "undefined" && window !== null) {
 	  window.Wrap = WrapClient;
-	} else if (typeof process !== "undefined" && process !== null) {
-	  module.exports = WrapClient;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+	module.exports = WrapClient;
+
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	(function () {
-	  try {
-	    cachedSetTimeout = setTimeout;
-	  } catch (e) {
-	    cachedSetTimeout = function () {
-	      throw new Error('setTimeout is not defined');
-	    }
-	  }
-	  try {
-	    cachedClearTimeout = clearTimeout;
-	  } catch (e) {
-	    cachedClearTimeout = function () {
-	      throw new Error('clearTimeout is not defined');
-	    }
-	  }
-	} ())
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = cachedSetTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    cachedClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        cachedSetTimeout(drainQueue, 0);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Asset, Card, CardCollection, Component, Job, Layout, Team, Widget, Wrap, WrapClient, constants;
 
-	constants = __webpack_require__(3);
+	constants = __webpack_require__(2);
 
-	Asset = __webpack_require__(4);
+	Asset = __webpack_require__(3);
 
-	Card = __webpack_require__(27);
+	Card = __webpack_require__(26);
 
-	CardCollection = __webpack_require__(28);
+	CardCollection = __webpack_require__(27);
 
-	Component = __webpack_require__(29);
+	Component = __webpack_require__(28);
 
-	Job = __webpack_require__(30);
+	Job = __webpack_require__(29);
 
-	Layout = __webpack_require__(31);
+	Layout = __webpack_require__(30);
 
-	Team = __webpack_require__(32);
+	Team = __webpack_require__(31);
 
-	Wrap = __webpack_require__(33);
+	Wrap = __webpack_require__(32);
 
-	Widget = __webpack_require__(34);
+	Widget = __webpack_require__(33);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -230,7 +104,7 @@
 
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports) {
 
 	var constants;
@@ -254,18 +128,18 @@
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Asset, HTTP, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Asset = (function(superClass) {
 	  extend(Asset, superClass);
@@ -288,17 +162,17 @@
 
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, WrapResource, isObject, wrapFetch,
 	  slice = [].slice;
 
-	wrapFetch = __webpack_require__(6);
+	wrapFetch = __webpack_require__(5);
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
-	isObject = __webpack_require__(20);
+	isObject = __webpack_require__(19);
 
 	WrapResource = (function() {
 	  function WrapResource(_client) {
@@ -351,16 +225,16 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
 
-	__webpack_require__(7);
+	__webpack_require__(6);
 
-	keys = __webpack_require__(9);
+	keys = __webpack_require__(8);
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	formatQueryString = function(parameters) {
 	  var callback;
@@ -438,19 +312,19 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// the whatwg-fetch polyfill installs the fetch() function
 	// on the global object (window or self)
 	//
 	// Return that as the export for use in Webpack, Browserify etc.
-	__webpack_require__(8);
+	__webpack_require__(7);
 	module.exports = self.fetch.bind(self);
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports) {
 
 	(function(self) {
@@ -889,15 +763,15 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHas = __webpack_require__(10),
-	    baseKeys = __webpack_require__(11),
-	    indexKeys = __webpack_require__(12),
-	    isArrayLike = __webpack_require__(16),
-	    isIndex = __webpack_require__(25),
-	    isPrototype = __webpack_require__(26);
+	var baseHas = __webpack_require__(9),
+	    baseKeys = __webpack_require__(10),
+	    indexKeys = __webpack_require__(11),
+	    isArrayLike = __webpack_require__(15),
+	    isIndex = __webpack_require__(24),
+	    isPrototype = __webpack_require__(25);
 
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -950,7 +824,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -982,7 +856,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -1004,14 +878,14 @@
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(13),
-	    isArguments = __webpack_require__(14),
-	    isArray = __webpack_require__(23),
-	    isLength = __webpack_require__(21),
-	    isString = __webpack_require__(24);
+	var baseTimes = __webpack_require__(12),
+	    isArguments = __webpack_require__(13),
+	    isArray = __webpack_require__(22),
+	    isLength = __webpack_require__(20),
+	    isString = __webpack_require__(23);
 
 	/**
 	 * Creates an array of index keys for `object` values of arrays,
@@ -1034,7 +908,7 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports) {
 
 	/**
@@ -1060,10 +934,10 @@
 
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLikeObject = __webpack_require__(15);
+	var isArrayLikeObject = __webpack_require__(14);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -1109,11 +983,11 @@
 
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(16),
-	    isObjectLike = __webpack_require__(22);
+	var isArrayLike = __webpack_require__(15),
+	    isObjectLike = __webpack_require__(21);
 
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -1146,12 +1020,12 @@
 
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getLength = __webpack_require__(17),
-	    isFunction = __webpack_require__(19),
-	    isLength = __webpack_require__(21);
+	var getLength = __webpack_require__(16),
+	    isFunction = __webpack_require__(18),
+	    isLength = __webpack_require__(20);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -1186,10 +1060,10 @@
 
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(18);
+	var baseProperty = __webpack_require__(17);
 
 	/**
 	 * Gets the "length" property value of `object`.
@@ -1207,7 +1081,7 @@
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1227,10 +1101,10 @@
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(20);
+	var isObject = __webpack_require__(19);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
@@ -1273,7 +1147,7 @@
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -1308,7 +1182,7 @@
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -1347,7 +1221,7 @@
 
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -1381,7 +1255,7 @@
 
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1413,11 +1287,11 @@
 
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(23),
-	    isObjectLike = __webpack_require__(22);
+	var isArray = __webpack_require__(22),
+	    isObjectLike = __webpack_require__(21);
 
 	/** `Object#toString` result references. */
 	var stringTag = '[object String]';
@@ -1456,7 +1330,7 @@
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -1483,10 +1357,10 @@
 
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(19);
+	var isFunction = __webpack_require__(18);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1509,18 +1383,18 @@
 
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Card, HTTP, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Card = (function(superClass) {
 	  extend(Card, superClass);
@@ -1575,18 +1449,18 @@
 
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Card, HTTP, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Card = (function(superClass) {
 	  extend(Card, superClass);
@@ -1630,18 +1504,18 @@
 
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Component, HTTP, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Component = (function(superClass) {
 	  extend(Component, superClass);
@@ -1663,18 +1537,18 @@
 
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Job, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Job = (function(superClass) {
 	  extend(Job, superClass);
@@ -1697,18 +1571,18 @@
 
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Layout, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Layout = (function(superClass) {
 	  extend(Layout, superClass);
@@ -1736,18 +1610,18 @@
 
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Team, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Team = (function(superClass) {
 	  extend(Team, superClass);
@@ -1777,18 +1651,18 @@
 
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Wrap, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Wrap = (function(superClass) {
 	  extend(Wrap, superClass);
@@ -1892,18 +1766,18 @@
 
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Widget, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	WrapResource = __webpack_require__(5);
+	WrapResource = __webpack_require__(4);
 
 	createEndpoint = WrapResource.createEndpoint;
 
-	HTTP = __webpack_require__(3).HTTP_METHODS;
+	HTTP = __webpack_require__(2).HTTP_METHODS;
 
 	Widget = (function(superClass) {
 	  extend(Widget, superClass);
