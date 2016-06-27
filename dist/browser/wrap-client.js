@@ -59,7 +59,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Asset, Card, CardCollection, Component, Job, Layout, Team, Widget, Wrap, WrapClient, constants;
+	var Asset, Card, CardCollection, Component, Job, Layout, Permission, Team, Widget, Wrap, WrapClient, constants;
 
 	constants = __webpack_require__(2);
 
@@ -75,11 +75,13 @@
 
 	Layout = __webpack_require__(30);
 
-	Team = __webpack_require__(31);
+	Permission = __webpack_require__(31);
 
-	Wrap = __webpack_require__(32);
+	Team = __webpack_require__(32);
 
-	Widget = __webpack_require__(33);
+	Wrap = __webpack_require__(33);
+
+	Widget = __webpack_require__(34);
 
 	WrapClient = (function() {
 	  function WrapClient(apiKey, baseUrl) {
@@ -91,6 +93,7 @@
 	    this.components = new Component(this);
 	    this.jobs = new Job(this);
 	    this.layouts = new Layout(this);
+	    this.permission = new Permission(this);
 	    this.teams = new Team(this);
 	    this.wraps = new Wrap(this);
 	    this.widgets = new Widget(this);
@@ -1613,6 +1616,39 @@
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var HTTP, Permission, WrapResource, createEndpoint,
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	WrapResource = __webpack_require__(4);
+
+	createEndpoint = WrapResource.createEndpoint;
+
+	HTTP = __webpack_require__(2).HTTP_METHODS;
+
+	Permission = (function(superClass) {
+	  extend(Permission, superClass);
+
+	  function Permission(_client) {
+	    this._client = _client;
+	    this.resourcePath = '/permissions';
+	  }
+
+	  Permission.prototype.list = createEndpoint({
+	    method: HTTP.GET
+	  });
+
+	  return Permission;
+
+	})(WrapResource);
+
+	module.exports = Permission;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var HTTP, Team, WrapResource, createEndpoint,
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
@@ -1651,7 +1687,7 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Wrap, WrapResource, createEndpoint,
@@ -1766,7 +1802,7 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var HTTP, Widget, WrapResource, createEndpoint,
