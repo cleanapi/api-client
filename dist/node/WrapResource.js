@@ -42,6 +42,7 @@ WrapResource.createEndpoint = function(arg1) {
     options = {
       headers: this._getAuthHeader()
     };
+    options.baseUrl = this._client.baseUrl;
     body = args.shift();
     if (isObject(body)) {
       if (method === HTTP.GET) {

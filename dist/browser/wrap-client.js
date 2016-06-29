@@ -63,6 +63,31 @@
 	// shim for using process in browser
 
 	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	(function () {
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
+	    }
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
+	    }
+	  }
+	} ())
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -87,7 +112,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = setTimeout(cleanUpNextTick);
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
 	    draining = true;
 
 	    var len = queue.length;
@@ -104,7 +129,7 @@
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    clearTimeout(timeout);
+	    cachedClearTimeout(timeout);
 	}
 
 	process.nextTick = function (fun) {
@@ -116,7 +141,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
+	        cachedSetTimeout(drainQueue, 0);
 	    }
 	};
 
@@ -330,6 +355,7 @@
 	    options = {
 	      headers: this._getAuthHeader()
 	    };
+	    options.baseUrl = this._client.baseUrl;
 	    body = args.shift();
 	    if (isObject(body)) {
 	      if (method === HTTP.GET) {
@@ -349,7 +375,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var HTTP, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
+	var HTTP, checkJobStatus, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
 
 	__webpack_require__(7);
 
@@ -372,6 +398,34 @@
 
 	isNullBodyStatus = function(status) {
 	  return status === 101 || status === 204 || status === 205 || status === 304;
+	};
+
+	checkJobStatus = function(token, baseUrl, authorization, fulfill, reject) {
+	  var options;
+	  options = {
+	    method: 'GET',
+	    headers: {
+	      Authorization: authorization,
+	      Accepts: 'application/json'
+	    }
+	  };
+	  return fetch(baseUrl + "/jobs/status?token=" + token, options).then(function(response) {
+	    return response.json();
+	  }).then(function(response) {
+	    var jobStatus;
+	    jobStatus = response.status;
+	    if (jobStatus === 202) {
+	      return setTimeout(function() {
+	        return checkJobStatus(token, baseUrl, fulfill, reject);
+	      }, 500);
+	    } else if (jobStatus >= 200 && jobStatus < 300) {
+	      return fulfill(response);
+	    } else {
+	      return reject(response);
+	    }
+	  })["catch"](function(exception) {
+	    return reject(exception);
+	  });
 	};
 
 	parseJson = function(response) {
@@ -399,6 +453,7 @@
 	};
 
 	makeRequest = function(method, url, options) {
+	  var baseUrl;
 	  if (method == null) {
 	    method = 'GET';
 	  }
@@ -418,7 +473,19 @@
 	    url += formatQueryString(options.search);
 	    delete options.search;
 	  }
-	  return fetch(url, options).then(checkStatus).then(parseJson);
+	  if (options.baseUrl) {
+	    baseUrl = options.baseUrl;
+	    delete options.baseUrl;
+	  }
+	  return fetch(url, options).then(checkStatus).then(parseJson).then(function(response) {
+	    if ((response.token != null) && baseUrl) {
+	      return new Promise(function(fulfill, reject) {
+	        return checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject);
+	      });
+	    } else {
+	      return Promise.resolve(response);
+	    }
+	  });
 	};
 
 	http = {
