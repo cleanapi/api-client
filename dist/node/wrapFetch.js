@@ -33,6 +33,13 @@ checkStatus = function(response) {
   var error;
   if (response.status >= 200 && response.status < 300) {
     return response;
+  } else if (response.headers._headers['content-type'][0].indexOf('json') > -1) {
+    return response.json().then(function(responseJson) {
+      var error;
+      error = new Error(response.statusText);
+      error.response = responseJson;
+      throw error;
+    });
   } else {
     error = new Error(response.statusText);
     error.response = response;
