@@ -19,6 +19,12 @@ parseJson = (response) ->
 checkStatus = (response) ->
 	if response.status >= 200 && response.status < 300
 		return response
+	else if response.headers._headers['content-type'][0].indexOf('json') > -1
+		response.json().then((responseJson) ->
+			error = new Error(response.statusText)
+			error.response = responseJson
+			throw error
+		)
 	else
 		error = new Error(response.statusText)
 		error.response = response
