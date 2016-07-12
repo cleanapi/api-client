@@ -1,4 +1,4 @@
-var HTTP, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
+var HTTP, checkJobStatus, checkStatus, formatQueryString, http, isNullBodyStatus, keys, makeRequest, parseJson;
 
 require('isomorphic-fetch');
 
@@ -21,6 +21,34 @@ formatQueryString = function(parameters) {
 
 isNullBodyStatus = function(status) {
   return status === 101 || status === 204 || status === 205 || status === 304;
+};
+
+checkJobStatus = function(token, baseUrl, authorization, fulfill, reject) {
+  var options;
+  options = {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+      Accepts: 'application/json'
+    }
+  };
+  return fetch(baseUrl + "/jobs/status?token=" + token, options).then(function(response) {
+    return response.json();
+  }).then(function(response) {
+    var jobStatus;
+    jobStatus = response.status;
+    if (jobStatus === 202) {
+      return setTimeout(function() {
+        return checkJobStatus(token, baseUrl, fulfill, reject);
+      }, 500);
+    } else if (jobStatus >= 200 && jobStatus < 300) {
+      return fulfill(response);
+    } else {
+      return reject(response);
+    }
+  })["catch"](function(exception) {
+    return reject(exception);
+  });
 };
 
 parseJson = function(response) {
@@ -48,6 +76,7 @@ checkStatus = function(response) {
 };
 
 makeRequest = function(method, url, options) {
+  var baseUrl;
   if (method == null) {
     method = 'GET';
   }
@@ -67,7 +96,19 @@ makeRequest = function(method, url, options) {
     url += formatQueryString(options.search);
     delete options.search;
   }
-  return fetch(url, options).then(checkStatus).then(parseJson);
+  if (options.baseUrl) {
+    baseUrl = options.baseUrl;
+    delete options.baseUrl;
+  }
+  return fetch(url, options).then(checkStatus).then(parseJson).then(function(response) {
+    if ((response.token != null) && baseUrl) {
+      return new Promise(function(fulfill, reject) {
+        return checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject);
+      });
+    } else {
+      return Promise.resolve(response);
+    }
+  });
 };
 
 http = {

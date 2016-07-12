@@ -12,6 +12,33 @@ formatQueryString = (parameters = {}) ->
 isNullBodyStatus = (status) ->
 	return status == 101 || status == 204 || status == 205 || status == 304
 
+checkJobStatus = (token, baseUrl, authorization, fulfill, reject) ->
+	options = {
+		method: 'GET'
+		headers: {
+			Authorization: authorization
+			Accepts: 'application/json'
+		}
+	}
+	fetch("#{baseUrl}/jobs/status?token=#{token}", options)
+		.then((response) ->
+			return response.json()
+		)
+		.then((response) ->
+			jobStatus = response.status
+			if jobStatus == 202
+				setTimeout(->
+					checkJobStatus(token, baseUrl, fulfill, reject)
+				, 500)
+			else if jobStatus >= 200 && jobStatus < 300
+				fulfill(response)
+			else
+				reject(response)
+		)
+		.catch((exception) ->
+			reject(exception)
+		)
+
 parseJson = (response) ->
 	if !isNullBodyStatus(response.status)
 		return response.json()
@@ -46,9 +73,21 @@ makeRequest = (method = 'GET', url, options = {}) ->
 		url += formatQueryString(options.search)
 		delete options.search
 
+	if options.baseUrl
+		baseUrl = options.baseUrl
+		delete options.baseUrl
+
 	return fetch(url, options)
 		.then(checkStatus)
 		.then(parseJson)
+		.then((response) ->
+			if response.token? && baseUrl
+				return new Promise((fulfill, reject) ->
+					checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject)
+				)
+			else
+				return Promise.resolve(response)
+		)
 
 http = {
 	get: (url, options) -> makeRequest(HTTP.GET, url, options)
