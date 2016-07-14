@@ -8,7 +8,7 @@ CardCollection = require('./CardCollection');
 
 Job = require('./Job');
 
-Wrap = require('./wrap');
+Wrap = require('./Wrap');
 
 Widget = require('./Widget');
 
