@@ -376,7 +376,7 @@ describe('Wrap', ->
 		body = { personalized_json: {}, tags: '' }
 
 		beforeEach(->
-			requestUrl += "/#{wrapId}/personalize"
+			requestUrl += "/#{wrapId}/personalize/v2"
 			fetchMock.mock(requestUrl, 'POST', '{}')
 		)
 

@@ -80,7 +80,7 @@ Wrap = (function(superClass) {
 
   Wrap.prototype.createPersonalized = createEndpoint({
     method: HTTP.POST,
-    path: '/{id}/personalize',
+    path: '/{id}/personalize/v2',
     urlParams: ['id']
   });
 
