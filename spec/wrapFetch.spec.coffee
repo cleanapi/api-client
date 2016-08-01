@@ -27,6 +27,7 @@ describe('wrapFetch', ->
 				status: 404
 				headers: { 'content-type': 'application/json' }
 				body: {}
+				throws: { message: 'Not Found' }
 			})
 		)
 
