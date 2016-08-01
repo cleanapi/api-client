@@ -25,6 +25,7 @@ describe('wrapFetch', ->
 		beforeEach(->
 			fetchMock.mock(BASE_URL + '/wraps/009DF38D-4000-4353-9D25-0E4099418FEC', 'GET', {
 				status: 404
+				headers: { 'content-type': 'application/json' }
 				body: {}
 			})
 		)
