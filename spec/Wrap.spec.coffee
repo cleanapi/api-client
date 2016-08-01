@@ -160,12 +160,12 @@ describe('Wrap', ->
 		body = { name: 'New Name' }
 
 		beforeEach(->
-			requestUrl = "#{BASE_URL}/wraps/#{wrapId}/rename"
-			fetchMock.mock(requestUrl, 'PUT', '[]')
+			requestUrl += "/#{wrapId}/rename"
+			fetchMock.mock(requestUrl, 'PUT', '{}')
 		)
 
 		it('should have the correct URL', (done) ->
-			wrap.rename(body)
+			wrap.rename(wrapId, body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
 					done()
@@ -174,7 +174,7 @@ describe('Wrap', ->
 		)
 
 		it('should send a PUT request', (done) ->
-			wrap.rename(body)
+			wrap.rename(wrapId, body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
 					done()
@@ -183,7 +183,7 @@ describe('Wrap', ->
 		)
 
 		it('should send the correct request body', (done) ->
-			wrap.rename(body)
+			wrap.rename(wrapId, body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
