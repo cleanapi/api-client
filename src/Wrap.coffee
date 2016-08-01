@@ -27,7 +27,7 @@ class Wrap extends WrapResource
 	})
 
 	publish: createEndpoint({
-		method: HTTP.POST
+		method: HTTP.PUT
 		path: '/{id}/publish'
 		urlParams: ['id']
 	})

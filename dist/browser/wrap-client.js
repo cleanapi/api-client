@@ -1709,7 +1709,7 @@
 	  });
 
 	  Wrap.prototype.publish = createEndpoint({
-	    method: HTTP.POST,
+	    method: HTTP.PUT,
 	    path: '/{id}/publish',
 	    urlParams: ['id']
 	  });

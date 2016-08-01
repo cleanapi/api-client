@@ -134,7 +134,7 @@ describe('Wrap', ->
 	describe('publish', ->
 		beforeEach(->
 			requestUrl += "/#{wrapId}/publish"
-			fetchMock.mock(requestUrl, 'POST', '{}')
+			fetchMock.mock(requestUrl, 'PUT', '{}')
 		)
 
 		it('should have the correct URL', (done) ->
@@ -146,10 +146,10 @@ describe('Wrap', ->
 				.catch(done.fail)
 		)
 
-		it('should send a POST request', (done) ->
+		it('should send a PUT request', (done) ->
 			wrap.publish(wrapId)
 				.then(->
-					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
 					done()
 				)
 				.catch(done.fail)
