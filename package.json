@@ -14,7 +14,7 @@
     "url": "git+https://github.com/WrapMedia/api-client.git"
   },
   "author": "Wrap Media",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/WrapMedia/api-client/issues"
   },
