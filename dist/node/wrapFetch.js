@@ -101,7 +101,7 @@ makeRequest = function(method, url, options) {
     delete options.baseUrl;
   }
   return fetch(url, options).then(checkStatus).then(parseJson).then(function(response) {
-    if ((response.token != null) && baseUrl) {
+    if (((response != null ? response.token : void 0) != null) && baseUrl) {
       return new Promise(function(fulfill, reject) {
         return checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject);
       });

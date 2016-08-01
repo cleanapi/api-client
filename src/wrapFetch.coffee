@@ -81,7 +81,7 @@ makeRequest = (method = 'GET', url, options = {}) ->
 		.then(checkStatus)
 		.then(parseJson)
 		.then((response) ->
-			if response.token? && baseUrl
+			if response?.token? && baseUrl
 				return new Promise((fulfill, reject) ->
 					checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject)
 				)
