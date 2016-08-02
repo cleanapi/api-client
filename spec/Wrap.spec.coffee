@@ -46,7 +46,7 @@ describe('Wrap', ->
 		)
 	)
 
-	describe('createWrapFromCards', ->
+	describe('create', ->
 		body = { card_ids: '9d467496-69c4-486d-ba12-511857258f6a,9d467496-69c4-486d-ba12-511857258f6b' }
 
 		beforeEach(->
@@ -54,7 +54,7 @@ describe('Wrap', ->
 		)
 
 		it('should have the correct URL', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
 					done()
@@ -63,7 +63,7 @@ describe('Wrap', ->
 		)
 
 		it('should send a POST request', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
 					done()
@@ -72,7 +72,7 @@ describe('Wrap', ->
 		)
 
 		it('should send the correct request body', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
@@ -134,7 +134,7 @@ describe('Wrap', ->
 	describe('publish', ->
 		beforeEach(->
 			requestUrl += "/#{wrapId}/publish"
-			fetchMock.mock(requestUrl, 'POST', '{}')
+			fetchMock.mock(requestUrl, 'PUT', '{}')
 		)
 
 		it('should have the correct URL', (done) ->
@@ -146,10 +146,46 @@ describe('Wrap', ->
 				.catch(done.fail)
 		)
 
-		it('should send a POST request', (done) ->
+		it('should send a PUT request', (done) ->
 			wrap.publish(wrapId)
 				.then(->
-					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
+					done()
+				)
+				.catch(done.fail)
+		)
+	)
+
+	describe('rename', ->
+		body = { name: 'New Name' }
+
+		beforeEach(->
+			requestUrl += "/#{wrapId}/rename"
+			fetchMock.mock(requestUrl, 'PUT', '{}')
+		)
+
+		it('should have the correct URL', (done) ->
+			wrap.rename(wrapId, body)
+				.then(->
+					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send a PUT request', (done) ->
+			wrap.rename(wrapId, body)
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).method).toEqual('PUT')
+					done()
+				)
+				.catch(done.fail)
+		)
+
+		it('should send the correct request body', (done) ->
+			wrap.rename(wrapId, body)
+				.then(->
+					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
 				)
 				.catch(done.fail)
@@ -340,7 +376,7 @@ describe('Wrap', ->
 		body = { personalized_json: {}, tags: '' }
 
 		beforeEach(->
-			requestUrl += "/#{wrapId}/personalize"
+			requestUrl += "/#{wrapId}/personalize/v2"
 			fetchMock.mock(requestUrl, 'POST', '{}')
 		)
 

@@ -1,62 +1,68 @@
 # Wrap API client library
 
-> This library is in development, should be considered experimental, and should not be distributed externally.
+## Getting Started
 
-## Build
-Library builds are included in the repo in the `dist/node` and `dist/browser` directories. If you do want build the library yourself, simply follow these steps:
+### Installation
+`npm install wrap-api`
 
-1. `npm install`
-2. `node_modules/.bin/gulp`
+### Promises
+This library requires promises but does not include a promise lib as a dependency. Please include a polyfill if your environment lacks native promise support. Make sure that the polyfill is loaded before `wrap-api` is.
 
-## Development
-If you are planning on contributing changes to the library, keep in mind that we keep a current build of the library under version control. There is a pre-commit script included that will perform this build for you. Run the following shell command from the root of the cloned library directory so that commits will trigger it.
-```bash
-ln -sf ../../pre-commit.sh .git/hooks/pre-commit
-```
+Below are examples using [`es6-promise`](https://www.npmjs.com/package/es6-promise).
 
-Also note that our test setup requires a version of Node greater than 0.12.
 
-## Installation
 ### NodeJS
-As this is not currently published on NPM, you'll need to reference it from our Github repo in the dependencies of your `package.json`.
-```javascript
-"dependencies": {
-	"wrap-api-client": "wrapmedia/api-client"
-}
-```
-It can then be required like any other NPM package. If you are using a version of Node that doesn't have native Promise support, include the `es6-promise` module in your dependencies and polyfill it before `wrap-api-client` is required.
 ```javascript
 require('es6-promise').polyfill();
-require('wrap-api-client')
+require('wrap-api');
 ```
 
 ### Browser
-Copy the `dist/browser/wrap-client.js` file to your project directory and include it in your html file. The library exposes a `Wrap` global object on the window. Native promises are used to handle async operations. A polyfill should be used to support older browsers.
 
-#### Browser compatibility
-Browser support covers the most recent versions of FF, Chrome, Safari, and Edge.
-
-## Usage
-#### Wrap(apiKey, [url])
-The `apiKey` argument is required for authorizing requests to the API server. This can be retrieved from your [Account Settings](https://authoring.wrap.co/#/settings/account) tab.
-The optional `url` argument allows for pointing to API servers other than production.
-
-```javascript
-# NodeJS
-var Wrap = require('wrap-api-client');
-var client = new Wrap(API_KEY);
-
-# Browser
-var client = new Wrap(API_KEY)
+```html
+<script src="node_modules/es6-promise/dist/es6-promise.min.js"></script>
+<script src="node_modules/wrap-api/dist/browser/wrap-client.min.js"></script>
 ```
 
-### Client resources
-Resources are accessed directly from client instances. Below is a list of available resources and their methods. [Details for specific endpoints can be found here.](https://wrapi.wrap.co/apidocs_public)
+## Usage
+ API keys are required and can be generated in the [Account Settings](https://authoring.wrap.co/#/settings/account) tab of the Wrap Authoring tool.
 
-#### Wraps
+```javascript
+// Create a client by passing an API key to the Wrap constructor.
+var client = new Wrap(API_KEY);
+
+// Resources are accessed on client instances. Actions are accessed on resources.
+// Retrieve a list of wraps...
+client.wraps.list()
+    .then(function(wraps) {
+        // An array of wraps
+    });
+
+// To retrieve a particular resource instance, pass in the resource id.
+client.wraps.get(MY_WRAP_ID)
+    .then(function(wrap) {
+        // My wrap
+    });
+
+// For requests that require a body, include an object as the last argument.
+client.wraps.rename(MY_WRAP_ID, { name: 'New Name' })
+    .then(function(wrap) {
+        // Still my wrap but with a new name
+    });
+
+// Search queries can also be passed in as an object.
+client.wraps.list({ tags: 'iPhone' })
+    .then(function(wraps) {
+        // An array of wraps that are tagged with 'iPhone'.
+    });
+```
+
+### Wraps
+* create
 * list
 * get
 * delete
+* rename
 * publish
 * share
 * insertCards
@@ -67,20 +73,31 @@ Resources are accessed directly from client instances. Below is a list of availa
 * listPersonalized
 * deletePersonalized
 
-#### Cards
+### Cards
 * list
 * get
 * clone
 * batchClone
 * delete
 * batchDelete
+* collectionSearch
 
-#### CardCollections
+### CardCollections
 * create
 * list
 * get
 * update
 * delete
 
-#### Jobs
+### Jobs
 * status
+
+### Widgets
+* list
+* get
+* create
+* update
+* delete
+
+## Additional Resources
+Please visit our developer portal for complete REST API documentation, including request path and query parameters, and request and response body schemas: [developers.wrap.co](https://developers.wrap.co/).

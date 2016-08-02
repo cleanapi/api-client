@@ -6,12 +6,12 @@ class Wrap extends WrapResource
 	constructor: (@_client) ->
 		@resourcePath = '/wraps'
 
-	list: createEndpoint({
-		method: HTTP.GET
+	create: createEndpoint({
+		method: HTTP.POST
 	})
 
-	createWrapFromCards: createEndpoint({
-		method: HTTP.POST
+	list: createEndpoint({
+		method: HTTP.GET
 	})
 
 	get: createEndpoint({
@@ -27,8 +27,14 @@ class Wrap extends WrapResource
 	})
 
 	publish: createEndpoint({
-		method: HTTP.POST
+		method: HTTP.PUT
 		path: '/{id}/publish'
+		urlParams: ['id']
+	})
+
+	rename: createEndpoint({
+		method: HTTP.PUT
+		path: '/{id}/rename'
 		urlParams: ['id']
 	})
 
@@ -64,7 +70,7 @@ class Wrap extends WrapResource
 
 	createPersonalized: createEndpoint({
 		method: HTTP.POST
-		path: '/{id}/personalize'
+		path: '/{id}/personalize/v2'
 		urlParams: ['id']
 	})
 

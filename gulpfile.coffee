@@ -3,6 +3,7 @@ coffee = require('gulp-coffee')
 coffeelint = require('gulp-coffeelint')
 coffeelintThreshold = require('gulp-coffeelint-threshold')
 contains = require('gulp-contains')
+del = require('del')
 gulp = require('gulp')
 gulpUtil = require('gulp-util')
 jasmine = require('gulp-jasmine')
@@ -36,17 +37,23 @@ handleFoundString = (string, file, cb) ->
 		return true
 
 buildBrowser = ->
+	destination = webpackConfig.output.path
+	del.sync(["#{destination}/**", "!#{destination}"])
+
 	gulp.src(webpackConfig.entry.app)
 		.pipe(webpack(webpackConfig))
-		.pipe(gulp.dest(webpackConfig.output.path))
+		.pipe(gulp.dest(destination))
 		.pipe(uglify())
 		.pipe(rename({ extname: '.min.js' }))
-		.pipe(gulp.dest(webpackConfig.output.path))
+		.pipe(gulp.dest(destination))
 
 buildNode = ->
+	destination = path.join(__dirname, 'dist', 'node')
+	del.sync(["#{destination}/**", "!#{destination}"])
+
 	gulp.src(path.join(__dirname, 'src', '**/*.coffee'))
 		.pipe(coffee({ bare: true }).on('error', gulpUtil.log))
-		.pipe(gulp.dest(path.join(__dirname, 'dist', 'node')))
+		.pipe(gulp.dest(destination))
 
 lint = ->
 	gulp.src(['./**/*.coffee', 'gulpfile.coffee', '!./dist/**/*', '!./node_modules/**/*'])
