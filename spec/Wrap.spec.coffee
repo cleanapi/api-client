@@ -46,7 +46,7 @@ describe('Wrap', ->
 		)
 	)
 
-	describe('createWrapFromCards', ->
+	describe('create', ->
 		body = { card_ids: '9d467496-69c4-486d-ba12-511857258f6a,9d467496-69c4-486d-ba12-511857258f6b' }
 
 		beforeEach(->
@@ -54,7 +54,7 @@ describe('Wrap', ->
 		)
 
 		it('should have the correct URL', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastUrl(requestUrl)).toEqual(requestUrl)
 					done()
@@ -63,7 +63,7 @@ describe('Wrap', ->
 		)
 
 		it('should send a POST request', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).method).toEqual('POST')
 					done()
@@ -72,7 +72,7 @@ describe('Wrap', ->
 		)
 
 		it('should send the correct request body', (done) ->
-			wrap.createWrapFromCards(body)
+			wrap.create(body)
 				.then(->
 					expect(fetchMock.lastOptions(requestUrl).body).toEqual(JSON.stringify(body))
 					done()
