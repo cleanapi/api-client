@@ -1,23 +1,33 @@
 {
-  "name": "wrap-api-client",
-  "version": "0.0.1",
-  "description": "Wrap REST client",
+  "name": "wrap-api",
+  "version": "1.0.0",
+  "description": "A Wrap REST API helper library",
   "main": "dist/node/index.js",
   "browser": "dist/browser/wrap-client.min.js",
   "scripts": {
     "lint": "./node_modules/.bin/gulp lint",
     "test": "./node_modules/.bin/gulp test",
-    "build": "./node_modules/.bin/gulp build"
+    "build": "./node_modules/.bin/gulp build",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WrapMedia/api-client.git"
   },
-  "author": "Wrap Media",
+  "author": "Wrap Media LLC",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/WrapMedia/api-client/issues"
   },
+  "engine": {
+    "node": ">= 0.10.0",
+    "npm": ">= 2.1.6"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist/"
+  ],
   "homepage": "https://github.com/WrapMedia/api-client#readme",
   "dependencies": {
     "isomorphic-fetch": "2.2.1",

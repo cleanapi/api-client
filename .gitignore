@@ -1,18 +1,14 @@
-# Logs
+### Logs ###
 log
 *.log
 
-# Build output directory
-target
-
-# Dependency directory
+### Dependencies ###
 node_modules
-bower_components
 
-# Intellij
+### Intellij ###
 .idea
 
-# vim
+### vim ###
 *.swp
 
 .vscode
@@ -20,4 +16,5 @@ bower_components
 .DS_Store
 .env
 
+### Build ###
 dist

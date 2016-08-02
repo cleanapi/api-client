@@ -6,12 +6,12 @@ class Wrap extends WrapResource
 	constructor: (@_client) ->
 		@resourcePath = '/wraps'
 
-	list: createEndpoint({
-		method: HTTP.GET
+	create: createEndpoint({
+		method: HTTP.POST
 	})
 
-	createWrapFromCards: createEndpoint({
-		method: HTTP.POST
+	list: createEndpoint({
+		method: HTTP.GET
 	})
 
 	get: createEndpoint({
