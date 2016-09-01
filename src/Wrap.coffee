@@ -74,9 +74,15 @@ class Wrap extends WrapResource
 		urlParams: ['id']
 	})
 
-	listPersonalized: createEndpoint({
+	listPersonalizedV1: createEndpoint({
 		method: HTTP.GET
 		path: '/{id}/personalize'
+		urlParams: ['id']
+	})
+
+	listPersonalized: createEndpoint({
+		method: HTTP.GET
+		path: '/{id}/personalize/v2'
 		urlParams: ['id']
 	})
 
