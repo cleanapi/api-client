@@ -1,70 +1,72 @@
 require('isomorphic-fetch')
 keys = require('lodash/keys')
 HTTP = require('./constants').HTTP_METHODS
+MIME_TYPE = require('./constants').MIME_TYPES
+includes = require('lodash/includes')
 
 
 formatQueryString = (parameters = {}) ->
 	callback = (key) ->
 		if parameters[key] != undefined
 			return "#{encodeURIComponent(key)}=#{encodeURIComponent(parameters[key])}"
+
 	return "?#{keys(parameters).map(callback).join('&')}"
 
-isNullBodyStatus = (status) ->
-	return status == 101 || status == 204 || status == 205 || status == 304
+parseBody = (response) ->
+	contentType = response.headers.get('Content-Type')
 
-checkJobStatus = (token, baseUrl, authorization, fulfill, reject) ->
-	options = {
-		method: 'GET'
-		headers: {
-			Authorization: authorization
-			Accepts: 'application/json'
-		}
-	}
-	fetch("#{baseUrl}/jobs/status?token=#{token}", options)
-		.then((response) ->
-			return response.json()
-		)
-		.then((response) ->
-			jobStatus = response.status
-			if jobStatus == 202
-				setTimeout(->
-					checkJobStatus(token, baseUrl, fulfill, reject)
-				, 500)
-			else if jobStatus >= 200 && jobStatus < 300
-				fulfill(response)
-			else
-				reject(response)
-		)
-		.catch((exception) ->
-			reject(exception)
-		)
+	if includes(contentType, MIME_TYPE.JSON)
+		parsePromise = response.json()
+	else if includes(contentType, MIME_TYPE.HTML) || includes(contentType, MIME_TYPE.TEXT)
+		parsePromise = response.text()
+	else
+		parsePromise = Promise.resolve()
 
-parseJson = (response) ->
-	if !isNullBodyStatus(response.status)
-		return response.json()
+	return Promise.all([response, parsePromise])
 
-checkStatus = (response) ->
+checkForSuccess = ([response, parsedBody]) ->
 	if response.status >= 200 && response.status < 300
-		return response
-	else if response.headers._headers['content-type'][0].indexOf('json') > -1
-		response.json().then((responseJson) ->
-			error = new Error(response.statusText)
-			error.response = responseJson
-			throw error
-		)
+		return [response, parsedBody]
 	else
 		error = new Error(response.statusText)
-		error.response = response
+		error.response = parsedBody
 		throw error
 
-makeRequest = (method = 'GET', url, options = {}) ->
+checkForAccepted = (authHeader, statusUrl) ->
+	return ([response, parsedBody]) ->
+		if response.status == 202
+			return queryJobStatus(parsedBody.status_url || statusUrl, authHeader)
+		else
+			return parsedBody
+
+delay = (duration) ->
+	return new Promise((resolve) ->
+		setTimeout(resolve, duration)
+	)
+
+queryJobStatus = (statusUrl, authHeader) ->
+	options = {
+		method: HTTP.GET
+		headers: {
+			Accepts: MIME_TYPE.JSON
+			Authorization: authHeader
+		}
+	}
+
+	return delay(500)
+		.then(-> fetch(statusUrl, options))
+		.then(parseBody)
+		.then(checkForSuccess)
+		.then(checkForAccepted(authHeader, statusUrl))
+
+makeRequest = (method = HTTP.GET, url, options = {}) ->
 	options.method = method
 
 	options.headers = options.headers || {}
-	options.headers['Accepts'] = 'application/json'
+	options.headers['Accepts'] = MIME_TYPE.JSON
 
 	if options.method != HTTP.GET
-		options.headers['Content-Type'] = 'application/json'
+		options.headers['Content-Type'] = MIME_TYPE.JSON
 
 		if options.body
 			options.body = JSON.stringify(options.body)
@@ -73,21 +75,10 @@ makeRequest = (method = 'GET', url, options = {}) ->
 		url += formatQueryString(options.search)
 		delete options.search
 
-	if options.baseUrl
-		baseUrl = options.baseUrl
-		delete options.baseUrl
-
 	return fetch(url, options)
-		.then(checkStatus)
-		.then(parseJson)
-		.then((response) ->
-			if response?.token? && baseUrl
-				return new Promise((fulfill, reject) ->
-					checkJobStatus(response.token, baseUrl, options.headers.Authorization, fulfill, reject)
-				)
-			else
-				return Promise.resolve(response)
-		)
+		.then(parseBody)
+		.then(checkForSuccess)
+		.then(checkForAccepted(options.headers.Authorization))
 
 http = {
 	get: (url, options) -> makeRequest(HTTP.GET, url, options)

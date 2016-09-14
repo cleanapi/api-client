@@ -23,8 +23,6 @@ WrapResource.createEndpoint = ({ method = HTTP.GET, path = '', urlParams = [] })
 
 		options = { headers: @_getAuthHeader() }
 
-		options.baseUrl = @_client.baseUrl
-
 		body = args.shift()
 		if isObject(body)
 			if method == HTTP.GET
