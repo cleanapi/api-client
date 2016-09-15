@@ -1,5 +1,5 @@
 constants = {
-	PRODUCTION_API_URL: 'http://localhost:55417/api'
+	PRODUCTION_API_URL: 'https://api.wrap.co/api'
 	HTTP_METHODS: {
 		GET: 'GET'
 		POST: 'POST'
