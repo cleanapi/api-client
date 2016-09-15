@@ -71,6 +71,7 @@ client.wraps.list({ tags: 'iPhone' })
 * setCards
 * createPersonalized
 * listPersonalized
+* listPersonalizedV1
 * deletePersonalized
 
 ### Cards
