@@ -72,10 +72,10 @@ describe('wrapFetch', ->
 
 	describe('202 responses', ->
 		beforeEach(->
-			fetchMock.mock(BASE_URL + '/wraps/123/publish', 'POST', {
+			fetchMock.mock("#{BASE_URL}/wraps/123/publish", 'POST', {
 				status: 202
 				headers: { 'content-type': MIME_TYPE.JSON }
-				body: { status_url: BASE_URL + '/jobs?token=456' }
+				body: { status_url: "#{BASE_URL}/jobs?token=456" }
 			})
 		)
 
@@ -95,7 +95,7 @@ describe('wrapFetch', ->
 				body: { published: true }
 			}
 
-			fetchMock.mock(BASE_URL + '/jobs?token=456', (url, opts) ->
+			fetchMock.mock("#{BASE_URL}/jobs?token=456", (url, opts) ->
 				currentStatusRequest++
 
 				if currentStatusRequest == maxStatusRequest
@@ -104,9 +104,9 @@ describe('wrapFetch', ->
 					return acceptedResponse
 			)
 
-			wrapFetch.post(BASE_URL + '/wraps/123/publish')
+			wrapFetch.post("#{BASE_URL}/wraps/123/publish")
 				.then((parsedBody) ->
-					expect(fetchMock.called(BASE_URL + '/jobs?token=456')).toBe(true)
+					expect(fetchMock.called("#{BASE_URL}/jobs?token=456")).toBe(true)
 					done()
 				)
 		)
@@ -114,7 +114,7 @@ describe('wrapFetch', ->
 
 	describe('responses with non 2xx status codes', ->
 		beforeEach(->
-			fetchMock.mock(BASE_URL + '/wraps/123', 'GET', {
+			fetchMock.mock("#{BASE_URL}/wraps/123", 'GET', {
 				status: 404
 				headers: { 'content-type': MIME_TYPE.JSON }
 				body: { status: 404, message: 'Not Found' }
@@ -122,13 +122,13 @@ describe('wrapFetch', ->
 		)
 
 		it('should not resolve', (done) ->
-			wrapFetch.get(BASE_URL + '/wraps/123')
+			wrapFetch.get("#{BASE_URL}/wraps/123")
 				.then(-> done.fail('Promise should not be resolved'))
 				.catch((error) -> done())
 		)
 
 		it('should be rejected with the response status text as the error message', (done) ->
-			wrapFetch.get(BASE_URL + '/wraps/123')
+			wrapFetch.get("#{BASE_URL}/wraps/123")
 				.catch((error) ->
 					expect(error.message).toBe('Not Found')
 					done()
@@ -136,7 +136,7 @@ describe('wrapFetch', ->
 		)
 
 		it('should be rejected with the response body as error.response', (done) ->
-			wrapFetch.get(BASE_URL + '/wraps/123')
+			wrapFetch.get("#{BASE_URL}/wraps/123")
 				.catch((error) ->
 					expect(error.response).toEqual({ status: 404, message: 'Not Found' })
 					done()
@@ -146,11 +146,11 @@ describe('wrapFetch', ->
 
 	describe('GET requests', ->
 		it('should include a query string when a search hash is provided', (done) ->
-			fetchMock.mock(BASE_URL + '/wraps?page=1&page_size=20', 'GET', [])
+			fetchMock.mock("#{BASE_URL}/wraps?page=1&page_size=20", 'GET', [])
 
 			wrapFetch.get(BASE_URL + '/wraps', { search: { page: 1, page_size: 20 } })
 				.then(->
-					expect(fetchMock.called(BASE_URL + '/wraps?page=1&page_size=20')).toBe(true)
+					expect(fetchMock.called("#{BASE_URL}/wraps?page=1&page_size=20")).toBe(true)
 					done()
 				)
 		)
