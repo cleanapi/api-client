@@ -2,6 +2,7 @@ require('isomorphic-fetch')
 fetchMock = require('fetch-mock')
 wrapFetch = require('../src/wrapFetch')
 BASE_URL = require('./helpers').BASE_URL
+MIME_TYPE = require('../src/constants').MIME_TYPES
 
 describe('wrapFetch', ->
 	afterEach(fetchMock.restore)
@@ -12,7 +13,7 @@ describe('wrapFetch', ->
 				validJson = '{ "hello": "world" }'
 
 				fetchMock.mock(BASE_URL, {
-					headers: { 'content-type': 'application/json' }
+					headers: { 'content-type': MIME_TYPE.JSON }
 					body: validJson
 				})
 
@@ -27,7 +28,7 @@ describe('wrapFetch', ->
 				invalidJson = ''
 
 				fetchMock.mock(BASE_URL, {
-					headers: { 'content-type': 'application/json' }
+					headers: { 'content-type': MIME_TYPE.JSON }
 					body: invalidJson
 				})
 
@@ -42,7 +43,7 @@ describe('wrapFetch', ->
 		describe('with a text content type', ->
 			it('should resolve the response body', (done) ->
 				fetchMock.mock(BASE_URL, {
-					headers: { 'content-type': 'text/html' }
+					headers: { 'content-type': MIME_TYPE.HTML }
 					body: '<p>hello</p>'
 				})
 
@@ -73,16 +74,38 @@ describe('wrapFetch', ->
 		beforeEach(->
 			fetchMock.mock(BASE_URL + '/wraps/123/publish', 'POST', {
 				status: 202
-				headers: { 'content-type': 'application/json' }
+				headers: { 'content-type': MIME_TYPE.JSON }
 				body: { status_url: BASE_URL + '/jobs?token=456' }
 			})
 		)
 
-		it('should query the returned job status URL', (done) ->
-			fetchMock.mock(BASE_URL + '/jobs?token=456', 200)
+		it('should query the returned job status URL until it receives non-202', (done) ->
+			maxStatusRequest = 2
+			currentStatusRequest = 0
+
+			acceptedResponse = {
+				status: 202
+				headers: { 'content-type': MIME_TYPE.JSON }
+				body: { status: 202 }
+			}
+
+			okResponse = {
+				status: 200
+				headers: { 'content-type': MIME_TYPE.JSON }
+				body: { published: true }
+			}
+
+			fetchMock.mock(BASE_URL + '/jobs?token=456', (url, opts) ->
+				currentStatusRequest++
+
+				if currentStatusRequest == maxStatusRequest
+					return okResponse
+				else
+					return acceptedResponse
+			)
 
 			wrapFetch.post(BASE_URL + '/wraps/123/publish')
-				.then(->
+				.then((parsedBody) ->
 					expect(fetchMock.called(BASE_URL + '/jobs?token=456')).toBe(true)
 					done()
 				)
@@ -91,12 +114,10 @@ describe('wrapFetch', ->
 
 	describe('responses with non 2xx status codes', ->
 		beforeEach(->
-			responseBody = { status: 404, message: 'Not Found' }
-
 			fetchMock.mock(BASE_URL + '/wraps/123', 'GET', {
 				status: 404
-				headers: { 'content-type': 'application/json' }
-				body: responseBody
+				headers: { 'content-type': MIME_TYPE.JSON }
+				body: { status: 404, message: 'Not Found' }
 			})
 		)
 
