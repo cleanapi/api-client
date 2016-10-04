@@ -11,6 +11,11 @@ constants = {
 		SMS: 'sms'
 		MMS: 'mms'
 	}
+	MIME_TYPES: {
+		JSON: 'application/json'
+		HTML: 'text/html'
+		TEXT: 'text/plain'
+	}
 }
 
 module.exports = constants
